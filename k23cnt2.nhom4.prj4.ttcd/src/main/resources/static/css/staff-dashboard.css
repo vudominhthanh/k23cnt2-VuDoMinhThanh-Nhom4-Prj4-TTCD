@@ -1,0 +1,66 @@
+/* Tổng quan layout */
+html, body { height: 100%; overflow: hidden; font-family: 'Segoe UI', Tahoma, sans-serif; }
+
+/* Khu vực quản lý đơn (Bên trái) */
+.order-list-container {
+    max-height: calc(100vh - 120px);
+    scrollbar-width: thin;
+}
+
+.order-grid-inner {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* Card đơn hàng thu nhỏ */
+.order-card {
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+}
+
+.order-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-color: #0d6efd;
+}
+
+.order-card .card-body {
+    padding: 10px 5px;
+    font-size: 0.7rem;
+}
+
+.order-card .order-code {
+    font-weight: 800;
+    color: #212529;
+}
+
+/* Chia 3 cột cho sidebar */
+#order-grid-inner .col-4 {
+    flex: 0 0 33.3333%;
+    max-width: 33.3333%;
+}
+
+/* Modal Styling */
+.modal-content { border-radius: 20px; }
+.modal-footer { border-top: none; }
+
+/* Trạng thái */
+.status-pending { border-left: 4px solid #ffc107; }
+.status-confirmed { border-left: 4px solid #0dcaf0; }
+.status-delivering { border-left: 4px solid #0d6efd; }
+
+/* POS Menu (Bên phải) */
+.menu-container {
+    background-color: #f8f9fa;
+}
+
+.product-item {
+    background: white;
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #eee;
+    cursor: pointer;
+}

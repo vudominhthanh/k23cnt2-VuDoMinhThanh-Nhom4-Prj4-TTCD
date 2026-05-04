@@ -1,0 +1,318 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="vi" xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
+<!--      layout:decorate="~{User/_layout}">-->
+<!--<head>-->
+<!--    <title th:text="${product.name} + ' - Tea & Coffee'">Chi tiết sản phẩm</title>-->
+<!--    <link rel="stylesheet" th:href="@{/css/product_details.css}">-->
+<!--    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div layout:fragment="content">-->
+<!--    <div class="container py-5">-->
+<!--        <nav aria-label="breadcrumb" class="mb-4" data-aos="fade-down">-->
+<!--            <ol class="breadcrumb">-->
+<!--                <li class="breadcrumb-item"><a th:href="@{/}" class="text-decoration-none text-muted">Trang chủ</a></li>-->
+<!--                <li class="breadcrumb-item"><a th:href="@{/menu}" class="text-decoration-none text-muted" th:text="${product.category != null ? product.category.name : 'Thực Đơn'}">Danh mục</a></li>-->
+<!--                <li class="breadcrumb-item active fw-bold" aria-current="page" th:text="${product.name}">Tên sản phẩm</li>-->
+<!--            </ol>-->
+<!--        </nav>-->
+
+<!--        <div class="bg-white p-4 p-md-5 rounded-4 shadow-sm mb-5">-->
+<!--            <div class="row align-items-start">-->
+
+<!--                <div class="col-lg-5 mb-4 mb-lg-0 text-center" data-aos="fade-right" data-aos-duration="800">-->
+<!--                    <img th:src="${product.imageUrl != null ? product.imageUrl : '/images/default-product.jpg'}"-->
+<!--                         class="img-fluid rounded-4 shadow" alt="Product Image"-->
+<!--                         style="width: 100%; max-width: 450px; object-fit: cover; aspect-ratio: 1/1;">-->
+<!--                </div>-->
+
+<!--                <div class="col-lg-7 ps-lg-5" data-aos="fade-left" data-aos-duration="800" data-aos-delay="200">-->
+<!--                    <h1 class="product-title mb-2" th:text="${product.name}">Tên Sản Phẩm</h1>-->
+
+<!--                    <div class="d-flex align-items-center mb-3">-->
+<!--                        <div class="text-warning me-2">-->
+<!--                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>-->
+<!--                        </div>-->
+<!--                        <span class="text-muted small" th:text="${totalReviews != null && totalReviews > 0 ? '(' + avgRating + '/5 - ' + totalReviews + ' đánh giá)' : '(Chưa có đánh giá)'}"></span>-->
+<!--                    </div>-->
+
+<!--                    <h2 class="product-price mb-4 text-success fw-bold">-->
+<!--                        <span id="displayPrice" th:text="${#numbers.formatDecimal(product.basePrice, 0, 'COMMA', 0, 'POINT')}">0</span>đ-->
+<!--                    </h2>-->
+
+<!--                    <p class="text-muted mb-4" th:text="${product.description}" style="line-height: 1.6;"></p>-->
+<!--                    <hr class="mb-4">-->
+
+<!--                    <form id="addToCartForm" th:action="@{/cart/add}" method="POST">-->
+<!--                        <input type="hidden" name="productId" th:value="${product.id}">-->
+<!--                        <input type="hidden" id="basePrice" th:value="${product.basePrice}">-->
+
+<!--                        <div class="mb-4" th:if="${not #lists.isEmpty(variants)}">-->
+<!--                            <h6 class="fw-bold mb-3">Chọn Kích Cỡ</h6>-->
+<!--                            <div class="d-flex gap-2 flex-wrap">-->
+<!--                                <th:block th:each="variant, iterStat : ${variants}">-->
+<!--                                    <input type="radio" class="btn-check calc-price" name="variantId" th:id="'size_' + ${variant.id}"-->
+<!--                                           th:value="${variant.id}" th:checked="${iterStat.index == 0}"-->
+<!--                                           th:data-price="${variant.extraPrice}">-->
+<!--                                    <label class="btn btn-outline-coffee rounded-pill px-4 py-2 d-flex flex-column align-items-center" th:for="'size_' + ${variant.id}">-->
+<!--                                        <span class="fw-bold" th:text="${variant.sizeName}">Size</span>-->
+<!--                                        <small th:if="${variant.extraPrice > 0}" th:text="'+' + ${#numbers.formatDecimal(variant.extraPrice, 0, 'COMMA', 0, 'POINT')} + 'đ'"></small>-->
+<!--                                    </label>-->
+<!--                                </th:block>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--                        <div th:with="toppings=${product.options.?[optionType == 'TOPPING']}">-->
+<!--                            <div class="mb-4" th:if="${not #lists.isEmpty(toppings)}">-->
+<!--                                <h6 class="fw-bold mb-3">Thêm Topping</h6>-->
+<!--                                <div class="d-flex flex-column gap-2">-->
+<!--                                    <div class="form-check custom-checkbox" th:each="option : ${toppings}">-->
+<!--                                        <input class="form-check-input calc-price" type="checkbox" name="toppingIds"-->
+<!--                                               th:value="${option.id}" th:id="'topping_' + ${option.id}"-->
+<!--                                               th:data-price="${option.additionalPrice}">-->
+<!--                                        <label class="form-check-label w-100 d-flex justify-content-between cursor-pointer" th:for="'topping_' + ${option.id}">-->
+<!--                                            <span th:text="${option.optionName}">Trân châu</span>-->
+<!--                                            <span class="text-muted" th:if="${option.additionalPrice > 0}" th:text="'+' + ${#numbers.formatDecimal(option.additionalPrice, 0, 'COMMA', 0, 'POINT')} + 'đ'"></span>-->
+<!--                                        </label>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--                        <div class="row mb-4">-->
+<!--                            <div class="col-md-6" th:with="sugars=${product.options.?[optionType == 'SUGAR']}" th:if="${not #lists.isEmpty(sugars)}">-->
+<!--                                <h6 class="fw-bold mb-3">Lượng Đường</h6>-->
+<!--                                <select class="form-select rounded-pill" name="sugarOptionId">-->
+<!--                                    <option th:each="option : ${sugars}" th:value="${option.id}" th:text="${option.optionName}">100%</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-6 mt-3 mt-md-0" th:with="ices=${product.options.?[optionType == 'ICE']}" th:if="${not #lists.isEmpty(ices)}">-->
+<!--                                <h6 class="fw-bold mb-3">Lượng Đá</h6>-->
+<!--                                <select class="form-select rounded-pill" name="iceOptionId">-->
+<!--                                    <option th:each="option : ${ices}" th:value="${option.id}" th:text="${option.optionName}">100%</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--                        <div class="d-flex align-items-center gap-3 mt-5">-->
+<!--                            <div class="quantity-selector d-flex align-items-center rounded-pill border px-3 py-2 bg-light">-->
+<!--                                <button type="button" class="btn btn-sm btn-link text-dark text-decoration-none" onclick="updateQuantity(-1)">-</button>-->
+<!--                                <input type="number" id="quantityInput" class="form-control border-0 text-center p-0 bg-transparent fw-bold calc-price" name="quantity" value="1" min="1" max="50" style="width: 40px; box-shadow: none;" readonly>-->
+<!--                                <button type="button" class="btn btn-sm btn-link text-dark text-decoration-none" onclick="updateQuantity(1)">+</button>-->
+<!--                            </div>-->
+
+<!--                            <button type="submit" class="btn flex-grow-1 rounded-pill py-3 fw-bold text-uppercase text-white shadow" style="background-color: var(&#45;&#45;tea-green); transition: 0.3s; transform: scale(1);">-->
+<!--                                <i class="fas fa-shopping-cart me-2"></i> Thêm Vào Giỏ - <span id="btnPriceDisplay">0đ</span>-->
+<!--                            </button>-->
+<!--                        </div>-->
+<!--                    </form>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div class="bg-white p-4 p-md-5 rounded-4 shadow-sm" data-aos="fade-up" data-aos-duration="800">-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>-->
+<!--    <script src="/js/product_details.js"></script>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{User/_layout}">
+<head>
+    <title>Tea & Coffee</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/product_details.css}">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
+<body>
+
+<div layout:fragment="content" class="w-100 py-3 product-page-wrapper">
+
+    <nav aria-label="breadcrumb" class="mb-4" data-aos="fade-down">
+        <ol class="breadcrumb bg-transparent p-0 m-0">
+            <li class="breadcrumb-item"><a th:href="@{/}" class="text-decoration-none text-muted small">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/menu}" class="text-decoration-none text-muted small">Cà Phê Việt</a></li>
+            <li class="breadcrumb-item active fw-bold small" aria-current="page" style="color: var(--coffee-dark);">Cà Phê Sữa Đá Truyền Thống</li>
+        </ol>
+    </nav>
+
+    <div class="bg-white p-4 p-md-5 rounded-4 shadow-sm mb-4 w-100">
+        <div class="row">
+            <div class="col-lg-5 text-center mb-4 mb-lg-0" data-aos="fade-right" data-aos-duration="800">
+                <div class="product-img-container shadow-sm rounded-4">
+                    <img src="https://images.unsplash.com/photo-1572442388796-11668a67e13a?q=80&w=500"
+                         class="img-fluid w-100" alt="Cà Phê Sữa Đá" style="object-fit: cover; aspect-ratio: 1/1;">
+                </div>
+            </div>
+
+            <div class="col-lg-7 ps-lg-5" data-aos="fade-left" data-aos-duration="800">
+                <h1 class="product-title h2 mb-2">Cà Phê Sữa Đá Truyền Thống</h1>
+
+                <div class="d-flex align-items-center mb-3">
+                    <div class="text-warning me-2 small">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <span class="text-muted small">(4.8/5 - 128 đánh giá)</span>
+                </div>
+
+                <div class="price-tag h2 mb-4 fw-bold" style="color: var(--tea-green);">
+                    <span id="displayPrice">29.000</span>đ
+                </div>
+
+                <p class="text-muted mb-4" style="line-height: 1.7; font-size: 1.05rem;">
+                    Hương vị đậm đà, thơm ngon khó cưỡng. Sự kết hợp hoàn hảo giữa những hạt cà phê Robusta nguyên chất và sữa đặc thượng hạng, mang lại nguồn năng lượng bừng tỉnh cho ngày mới.
+                </p>
+                <hr class="mb-4" style="border-color: #f0e6e0;">
+
+                <form id="addToCartForm" action="#" method="POST">
+                    <input type="hidden" id="basePrice" value="29000">
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3 small text-uppercase" style="color: var(--coffee-light);">Chọn Kích Cỡ</h6>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <input type="radio" class="btn-check calc-price" name="variantId" id="sizeS" value="S" data-price="0" checked>
+                            <label class="btn btn-outline-coffee rounded-pill px-4 py-2 text-center" for="sizeS">
+                                <span class="fw-bold d-block">Size S</span>
+                            </label>
+
+                            <input type="radio" class="btn-check calc-price" name="variantId" id="sizeM" value="M" data-price="5000">
+                            <label class="btn btn-outline-coffee rounded-pill px-4 py-2 text-center" for="sizeM">
+                                <span class="fw-bold d-block">Size M</span>
+                                <small>+5.000đ</small>
+                            </label>
+
+                            <input type="radio" class="btn-check calc-price" name="variantId" id="sizeL" value="L" data-price="10000">
+                            <label class="btn btn-outline-coffee rounded-pill px-4 py-2 text-center" for="sizeL">
+                                <span class="fw-bold d-block">Size L</span>
+                                <small>+10.000đ</small>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3 small text-uppercase" style="color: var(--coffee-light);">Thêm Topping</h6>
+                        <div class="d-flex flex-column gap-2">
+                            <div class="form-check custom-checkbox">
+                                <input class="form-check-input calc-price" type="checkbox" name="toppingIds" id="top1" data-price="10000">
+                                <label class="form-check-label w-100 d-flex justify-content-between" for="top1">
+                                    <span>Kem Macchiato Béo Ngậy</span>
+                                    <span class="text-muted small">+10.000đ</span>
+                                </label>
+                            </div>
+                            <div class="form-check custom-checkbox">
+                                <input class="form-check-input calc-price" type="checkbox" name="toppingIds" id="top2" data-price="5000">
+                                <label class="form-check-label w-100 d-flex justify-content-between" for="top2">
+                                    <span>Trân Châu Trắng</span>
+                                    <span class="text-muted small">+5.000đ</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold mb-3 small text-uppercase" style="color: var(--coffee-light);">Lượng Đường</h6>
+                            <select class="form-select custom-select rounded-pill shadow-none" name="sugarOptionId">
+                                <option value="1">100% Đường (Tiêu chuẩn)</option>
+                                <option value="2">70% Đường</option>
+                                <option value="3">50% Đường</option>
+                                <option value="4">Không Đường</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mt-3 mt-md-0">
+                            <h6 class="fw-bold mb-3 small text-uppercase" style="color: var(--coffee-light);">Lượng Đá</h6>
+                            <select class="form-select custom-select rounded-pill shadow-none" name="iceOptionId">
+                                <option value="1">100% Đá (Tiêu chuẩn)</option>
+                                <option value="2">50% Đá</option>
+                                <option value="3">Không Đá</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 align-items-center mt-5">
+                        <div class="quantity-control d-flex border rounded-pill overflow-hidden" style="background-color: #fdfbf9; border-color: #f0e6e0 !important;">
+                            <button type="button" class="btn border-0 px-3 text-muted fw-bold hover-bg" onclick="updateQuantity(-1)">-</button>
+                            <input type="text" id="quantityInput" value="1" class="form-control border-0 text-center fw-bold" style="width: 55px; background: transparent;" readonly>
+                            <button type="button" class="btn border-0 px-3 text-muted fw-bold hover-bg" onclick="updateQuantity(1)">+</button>
+                        </div>
+                        <button type="button" class="btn btn-add-to-cart flex-grow-1 rounded-pill py-3 fw-bold text-uppercase shadow-sm text-white">
+                            <i class="fas fa-shopping-bag me-2"></i> Thêm Vào Giỏ - <span id="btnPriceDisplay">29.000đ</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-4 p-md-5 rounded-4 shadow-sm mb-4 w-100" data-aos="fade-up" data-aos-duration="800">
+        <h3 class="product-title mb-4" style="font-size: 1.5rem;">Mô Tả Chi Tiết</h3>
+        <div class="text-muted" style="line-height: 1.8; font-size: 1.05rem;">
+            <p>Được chắt lọc từ những hạt cà phê Robusta hảo hạng nhất vùng Tây Nguyên, rang xay mộc theo công thức đặc biệt của Tea & Coffee.</p>
+            <ul class="mb-0">
+                <li><strong>Thành phần chính:</strong> Cà phê espresso, sữa đặc cao cấp, đá viên tinh khiết.</li>
+                <li><strong>Hương vị:</strong> Đắng nhẹ đầu lưỡi, hậu vị ngọt béo, thơm mùi cà phê rang mộc.</li>
+                <li><strong>Khuyên dùng:</strong> Ngon nhất khi dùng lạnh trong vòng 2 giờ sau khi pha chế.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="bg-white p-4 p-md-5 rounded-4 shadow-sm mb-5 w-100" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
+        <h3 class="product-title mb-4" style="font-size: 1.5rem;">Đánh Giá Từ Khách Hàng (128)</h3>
+
+        <div class="review-list">
+            <div class="review-item border-bottom py-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="avatar rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm" style="width: 45px; height: 45px; background-color: var(--tea-green);">T</div>
+                        <div>
+                            <h6 class="mb-0 fw-bold" style="color: var(--coffee-dark);">Minh Thành</h6>
+                            <small class="text-muted">27/04/2026 - 09:30 AM</small>
+                        </div>
+                    </div>
+                    <div class="text-warning small">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                </div>
+                <p class="mb-0 mt-2 ms-5 ps-3 text-muted" style="line-height: 1.6;">
+                    Cà phê rất thơm, thêm kem macchiato béo béo uống cực kỳ cuốn. Mình đã đặt món này lần thứ 3 trong tuần rồi. Giao hàng cũng rất cẩn thận không bị đổ ra ngoài.
+                </p>
+            </div>
+
+            <div class="review-item pt-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="avatar rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm" style="width: 45px; height: 45px; background-color: #c0a080;">L</div>
+                        <div>
+                            <h6 class="mb-0 fw-bold" style="color: var(--coffee-dark);">Phương Linh</h6>
+                            <small class="text-muted">25/04/2026 - 14:15 PM</small>
+                        </div>
+                    </div>
+                    <div class="text-warning small">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    </div>
+                </div>
+                <p class="mb-0 mt-2 ms-5 ps-3 text-muted" style="line-height: 1.6;">
+                    Vị cà phê khá chuẩn, nhưng mình khuyên các bạn không thích ăn ngọt nên chọn mức đường 50% là vừa miệng nhất.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-4 p-md-5 rounded-4 shadow-sm mb-5 w-100" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100"></div>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script th:src="@{/js/product_details.js}"></script>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tea & Coffee</title>
+    <link rel="stylesheet" href="/css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="container" id="container">
+
+    <div class="form-container sign-up-container">
+        <form action="/register" method="POST">
+            <h2>Đăng Ký 🍃</h2>
+            <p class="subtitle">Trở thành hội viên ngay</p>
+            <input type="text" name="fullName" placeholder="Họ và tên" required />
+            <input type="email" name="email" placeholder="Email" required />
+            <input type="password" name="password" placeholder="Mật khẩu" required />
+            <button type="submit" class="btn-brown">Tạo tài khoản</button>
+        </form>
+    </div>
+
+    <div class="form-container sign-in-container">
+        <form action="/login" method="POST">
+            <h2>Đăng Nhập ☕</h2>
+            <p class="subtitle">Mừng bạn quay trở lại</p>
+            <input type="email" name="email" placeholder="Email" required />
+            <input type="password" name="password" placeholder="Mật khẩu" required />
+            <a href="#" class="forgot-pass">Quên mật khẩu?</a>
+            <button type="submit" class="btn-brown">Đăng nhập</button>
+        </form>
+    </div>
+
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-left">
+                <h2>Chào bạn mới! 🌱</h2>
+                <p>Nhập thông tin cá nhân và bắt đầu hành trình thưởng thức hương vị cùng chúng tôi.</p>
+                <button class="ghost" id="signUp">Đăng ký ngay</button>
+            </div>
+
+            <div class="overlay-panel overlay-right">
+                <h2>Chào mừng trở lại! 🤎</h2>
+                <p>Để giữ kết nối với chúng tôi, vui lòng đăng nhập bằng thông tin của bạn.</p>
+                <button class="ghost" id="signIn">Đăng nhập</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/auth.js"></script>
+</body>
+</html>

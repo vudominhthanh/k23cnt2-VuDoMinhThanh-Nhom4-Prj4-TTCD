@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{User/_layout}">
+<head>
+    <title>Trang chủ - Tea & Coffee</title>
+    <link rel="stylesheet" href="/css/home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <section class="hero-section mb-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6" data-aos="fade-right">
+                    <span class="badge mb-2" style="background-color: rgba(79, 119, 45, 0.1); color: var(--tea-green);">Chào mừng đến với Tea & Coffee</span>
+                    <h1 class="hero-title" data-aos="fade-up">
+                        Đánh thức <br>
+                        <span>ngày mới</span> của bạn
+                    </h1>
+                    <p class="lead mt-3 text-muted">Hương vị cà phê nguyên bản và những lá trà thanh khiết nhất, được tuyển chọn từ những vùng nguyên liệu trứ danh.</p>
+                    <div class="d-flex gap-3 mt-4">
+                        <a th:href="@{/menu}" class="btn px-4 py-2 shadow-sm" style="background-color: var(--tea-green); color: white; border-radius: 25px;">Khám Phá Menu</a>
+                        <a href="#featured" class="btn btn-outline-dark px-4 py-2" style="border-radius: 25px;">Xem Bán Chạy</a>
+                    </div>
+                </div>
+                <div class="col-md-6 text-center mt-5 mt-md-0">
+                    <div style="background: url('/images/anhhomett.jpg') center/cover; height: 400px; border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; box-shadow: 20px 20px 60px #bebebe;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container mb-5">
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="card category-card p-4" style="background-color: #fdf5e6;">
+                    <h4 style="color: var(--coffee-dark)">Coffee</h4>
+                    <p class="small text-muted">Robusta & Arabica thượng hạng</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card category-card p-4" style="background-color: #f0f7ee;">
+                    <h4 style="color: var(--tea-green)">Tea</h4>
+                    <p class="small text-muted">Trà xanh, trà sữa & trà trái cây</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card category-card p-4" style="background-color: #fff0f5;">
+                    <h4 style="color: #d63384">Pastry</h4>
+                    <p class="small text-muted">Bánh ngọt ăn kèm hoàn hảo</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section id="featured" class="container mb-5 py-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold" style="color: var(--coffee-dark)">Sản Phẩm Nổi Bật</h2>
+            <div style="width: 60px; height: 3px; background: var(--tea-green); margin: 10px auto;"></div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="card product-card">
+                    <div class="product-img-wrapper">
+                        <span class="badge-new">Mới</span>
+                        <img src="https://images.unsplash.com/photo-1541167760496-162955ed8a9f?q=80&w=300" class="img-fluid rounded-top" alt="Product">
+                        <a href="#" class="btn-add-cart shadow"><i class="fas fa-plus"></i></a>
+                    </div>
+                    <div class="card-body pt-4">
+                        <h6 class="fw-bold mb-1">Cà Phê Muối Đặc Biệt</h6>
+                        <p class="text-muted small mb-2">Đậm đà, béo ngậy</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold text-success">35.000đ</span>
+                            <div class="text-warning small">
+                                <i class="fas fa-star"></i> 5.0
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="card product-card">
+                    <div class="product-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1597481499750-3e6b22637e12?q=80&w=300" class="img-fluid rounded-top" alt="Product">
+                        <a href="#" class="btn-add-cart shadow"><i class="fas fa-plus"></i></a>
+                    </div>
+                    <div class="card-body pt-4">
+                        <h6 class="fw-bold mb-1">Trà Đào Cam Sả</h6>
+                        <p class="text-muted small mb-2">Giải nhiệt tức thì</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold text-success">45.000đ</span>
+                            <div class="text-warning small">
+                                <i class="fas fa-star"></i> 4.8
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="card product-card">
+                    <div class="product-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1572442388796-11668a67e13a?q=80&w=300" class="img-fluid rounded-top" alt="Product">
+                        <a href="#" class="btn-add-cart shadow"><i class="fas fa-plus"></i></a>
+                    </div>
+                    <div class="card-body pt-4">
+                        <h6 class="fw-bold mb-1">Bạc Xỉu Đá</h6>
+                        <p class="text-muted small mb-2">Hương vị truyền thống</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold text-success">29.000đ</span>
+                            <div class="text-warning small">
+                                <i class="fas fa-star"></i> 4.9
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="card product-card">
+                    <div class="product-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=300" class="img-fluid rounded-top" alt="Product">
+                        <a href="#" class="btn-add-cart shadow"><i class="fas fa-plus"></i></a>
+                    </div>
+                    <div class="card-body pt-4">
+                        <h6 class="fw-bold mb-1">Trà Sữa Matcha</h6>
+                        <p class="text-muted small mb-2">Uji Matcha nguyên chất</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold text-success">49.000đ</span>
+                            <div class="text-warning small">
+                                <i class="fas fa-star"></i> 4.7
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-light py-5" style="border-radius:20px;">
+        <div class="container">
+            <div class="row g-4 text-center">
+                <div class="col-md-4">
+                    <div class="p-3">
+                        <i class="fas fa-leaf fa-2x mb-3" style="color: var(--tea-green)"></i>
+                        <h5>Nguyên Liệu Sạch</h5>
+                        <p class="text-muted small">Trà và cà phê được thu hoạch thủ công, đảm bảo độ tươi mới.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3">
+                        <i class="fas fa-shipping-fast fa-2x mb-3" style="color: var(--tea-green)"></i>
+                        <h5>Giao Hàng Nhanh</h5>
+                        <p class="text-muted small">Cam kết giao hàng trong vòng 30 phút khu vực nội thành.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3">
+                        <i class="fas fa-heart fa-2x mb-3" style="color: var(--tea-green)"></i>
+                        <h5>Phục Vụ Tận Tâm</h5>
+                        <p class="text-muted small">Luôn lắng nghe và mang lại trải nghiệm tốt nhất cho bạn.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
+
+</body>
+</html>

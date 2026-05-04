@@ -1,0 +1,144 @@
+/* Khai báo biến tông màu chủ đạo */
+:root {
+    --coffee-dark: #3e2723;
+    --coffee-light: #8d6e63;
+    --tea-green: #689f38;
+    --bg-base: #fcfaf8;
+    --text-main: #4e342e;
+}
+
+body {
+    background-image: url("/images/bakcgroundweb.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: var(--text-main);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-top: 76px; /* Chừa khoảng trống cho fixed navbar */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container-70 {
+    width: 70%;
+    margin-right: auto;
+    margin-left: auto;
+    display: flex;
+    flex-wrap: inherit;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@media (max-width: 992px) {
+    .container-70 {
+        width: 90%;
+    }
+    .navbar-collapse {
+        flex-grow: 1;
+        width: 100%;
+    }
+    .nav-link {
+        margin: 10px 0;
+    }
+}
+
+/* Navbar mượt mà */
+.navbar-collapse {
+    flex-grow: 0;
+}
+
+.dropdown-menu-end {
+    right: 0;
+    left: auto;
+}
+
+.custom-navbar {
+    background-color: rgba(240, 250, 240, 0.1);
+    backdrop-filter: blur(8px);
+    transition: all 0.4s ease;
+    padding: 15px 0;
+    box-shadow: 0 1px 10px rgba(0,0,0,0.03);
+}
+
+/* Lớp được thêm vào bằng JS khi cuộn chuột */
+.custom-navbar.scrolled {
+    padding: 8px 0;
+    background-color: rgba(240, 250, 240, 0.7);
+    box-shadow: 0 4px 15px rgba(62, 39, 35, 0.1);
+}
+
+.navbar-brand {
+    color: var(--coffee-dark) !important;
+    font-weight: 700;
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+}
+
+.navbar-brand span {
+    color: var(--tea-green);
+}
+
+.nav-link {
+    color: var(--coffee-light) !important;
+    font-weight: 500;
+    margin: 0 12px;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: var(--tea-green);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-link:hover {
+    color: var(--coffee-dark) !important;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+.btn-login {
+    background-color: var(--tea-green);
+    color: white !important;
+    border-radius: 25px;
+    padding: 6px 20px !important;
+    box-shadow: 0 4px 6px rgba(104, 159, 56, 0.2);
+    transition: all 0.3s ease;
+}
+
+.btn-login::after {
+    display: none;
+}
+
+.btn-login:hover {
+    background-color: var(--coffee-dark);
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(62, 39, 35, 0.2);
+}
+
+.main-content {
+    flex: 1 0 auto;
+    padding: 40px 0;
+    display: flex;
+    align-items: stretch;
+}
+
+/* Footer */
+.custom-footer {
+    background-color: rgba(240, 250, 240, 0.9);
+    color: green;
+    padding: 15px 0;
+    margin-top: auto;
+}

@@ -1,0 +1,214 @@
+:root {
+    --tea-green: #689F38;
+    --coffee-dark: #3C2F2F;
+    --coffee-sand: #C2A88D; /* Màu Cafe Cát chuẩn vintage */
+    --ticket-bg: #FFFFFF;
+    --page-bg: #FFFFFF; /* Màu nền khoét lỗ trùng với màu nền bảng */
+}
+
+body {
+    background-color: #f5f7f9;
+}
+
+.order-tabs-soft {
+    background-color: #f8f9fa;
+    padding: 5px; border-radius: 50px; display: inline-block;
+}
+
+.order-tabs-soft .nav-link {
+    background: transparent; border: none;
+    color: #888; border-radius: 40px;
+    padding: 8px 22px; font-size: 0.9rem; font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.order-tabs-soft .nav-link:hover { color: var(--coffee-dark); }
+.order-tabs-soft .nav-link.active {
+    background-color: white; color: var(--tea-green);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* THIẾT KẾ VÉ NỔI BẬT */
+.ticket-card {
+    background-color: var(--ticket-bg);
+    border: 1px solid #eaeaea;
+    border-radius: 20px;
+    /* Đổ bóng cực mạnh để làm khung nổi bần bật lên */
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08) !important;
+    display: flex; flex-direction: column;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.ticket-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 50px rgba(79, 119, 45, 0.15) !important;
+    border-color: var(--tea-green);
+}
+
+.ticket-top { color: var(--coffee-dark); }
+.tracking-wide { letter-spacing: 1px; }
+
+/* Trống rớt dòng */
+.customer-name-truncate {
+    max-width: 150px; white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis;
+    display: inline-block; text-align: right;
+}
+
+/* ĐƯỜNG GẠCH ĐỨT & LỖ KHOÉT */
+.ticket-divider {
+    position: relative;
+    border-top: 2px dashed #e5e7eb;
+    margin: 0;
+}
+
+.ticket-divider::before, .ticket-divider::after {
+    content: ''; position: absolute; top: -11px;
+    width: 22px; height: 22px;
+    background-color: var(--page-bg);
+    border: 1px solid #e5e7eb;
+    border-radius: 50%;
+}
+
+.ticket-divider::before {
+    left: -12px;
+    border-right-color: transparent; border-top-color: transparent; transform: rotate(45deg);
+}
+.ticket-divider::after {
+    right: -12px;
+    border-left-color: transparent; border-top-color: transparent; transform: rotate(-45deg);
+}
+
+.ticket-bottom {
+    background-color: var(--ticket-bg);
+    border-radius: 0 0 20px 20px;
+}
+
+/* KHUNG TRẠNG THÁI (ĐÃ CÓ MÀU NỀN BO TRÒN) */
+.status-frame {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.status-completed { background-color: rgba(104, 159, 56, 0.12); color: var(--tea-green); }
+.status-delivering { background-color: rgba(192, 160, 128, 0.2); color: #A07855; }
+.status-cancelled { background-color: rgba(220, 53, 69, 0.1); color: #dc3545; }
+
+/* NÚT CAFE CÁT ĐỘC QUYỀN */
+.btn-coffee-sand {
+    background-color: var(--coffee-sand);
+    color: #ffffff; /* Chữ trắng nổi bật trên nền cafe cát */
+    transition: 0.3s ease;
+    border: none;
+}
+
+.btn-coffee-sand:hover {
+    background-color: #A98C70; /* Đậm hơn khi đưa chuột vào */
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(194, 168, 141, 0.4) !important;
+}
+
+.order-tabs-soft .nav-link {
+    position: relative;
+    background: transparent;
+    border: none;
+    color: #888;
+    border-radius: 40px;
+    padding: 8px 22px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+/* Hover */
+.order-tabs-soft .nav-link:hover {
+    color: var(--coffee-dark);
+}
+
+/* Gạch chân animation */
+.order-tabs-soft .nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0%;
+    height: 2px;
+    background-color: var(--tea-green);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+/* Khi hover */
+.order-tabs-soft .nav-link:hover::after {
+    width: 60%;
+}
+
+/* Khi active */
+.order-tabs-soft .nav-link.active {
+    color: var(--tea-green);
+}
+
+/* Active gạch full */
+.order-tabs-soft .nav-link.active::after {
+    width: 80%;
+}
+
+.ticket-card {
+    background: linear-gradient(145deg, #ffffff, #f3f3f3);
+    border: 1px solid #eaeaea;
+    border-radius: 20px;
+
+    /* Đổ bóng mạnh hơn */
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.08),
+        0 2px 6px rgba(0,0,0,0.05);
+
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+/* Hover nổi rõ */
+.ticket-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow:
+        0 20px 60px rgba(0,0,0,0.12),
+        0 5px 15px rgba(104, 159, 56, 0.2);
+    border-color: var(--tea-green);
+}
+
+.status-frame {
+    display: inline-block;
+    width: fit-content;
+    margin: 0 auto;
+    padding: 8px 20px;
+
+    border-radius: 999px; /* pill */
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.btn-coffee-sand {
+    background: linear-gradient(135deg, #C2A88D, #A98C70);
+    color: #fff;
+    border: none;
+
+    font-weight: 600;
+    letter-spacing: 0.5px;
+
+    transition: all 0.3s ease;
+}
+
+/* Hover */
+.btn-coffee-sand:hover {
+    background: linear-gradient(135deg, #A98C70, #8C735C);
+    transform: translateY(-3px) scale(1.02);
+
+    box-shadow: 0 10px 25px rgba(169, 140, 112, 0.5);
+}
