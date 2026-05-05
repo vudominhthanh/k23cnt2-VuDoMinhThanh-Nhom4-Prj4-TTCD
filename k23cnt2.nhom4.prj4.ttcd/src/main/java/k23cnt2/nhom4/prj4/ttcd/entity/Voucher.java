@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "vouchers", indexes = {
+@Table(indexes = {
         @Index(name = "idx_voucher_code", columnList = "code")
 })
 @Data
@@ -23,33 +23,33 @@ public class Voucher {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "discount_type", nullable = false)
+    @Column(nullable = false)
     private ENUMS.DiscountType discountType;
 
-    @Column(name = "discount_value", nullable = false)
+    @Column(nullable = false)
     private BigDecimal discountValue;
 
-    @Column(name = "max_discount_amount")
+    @Column()
     private BigDecimal maxDiscountAmount;
 
-    @Column(name = "min_order_value")
+    @Column()
     private BigDecimal minOrderValue = BigDecimal.ZERO;
 
-    @Column(name = "usage_limit")
+    @Column()
     private Integer usageLimit;
 
-    @Column(name = "used_count")
+    @Column()
     private Integer usedCount = 0;
 
-    @Column(name = "valid_from")
+    @Column()
     private LocalDateTime validFrom;
 
-    @Column(name = "valid_to")
+    @Column()
     private LocalDateTime validTo;
 
-    @Column(name = "is_active")
+    @Column()
     private Boolean isActive = true;
 
-    @Column(name = "created_at", insertable = false, updatable = false)
+    @Column(insertable = false, updatable = false)
     private LocalDateTime createdAt;
 }

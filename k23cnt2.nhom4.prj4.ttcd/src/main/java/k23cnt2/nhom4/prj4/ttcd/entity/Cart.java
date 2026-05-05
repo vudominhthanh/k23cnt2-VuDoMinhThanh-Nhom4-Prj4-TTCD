@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "carts", indexes = {
+@Table(indexes = {
         @Index(name = "idx_cart_user_id", columnList = "user_id")
 })
 @Data
@@ -16,9 +16,9 @@ public class Cart {
     private Integer id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", unique = true, nullable = false)
+    @JoinColumn( unique = true, nullable = false)
     private User user;
 
-    @Column(name = "updated_at", insertable = false, updatable = false)
+    @Column(insertable = false, updatable = false)
     private LocalDateTime updatedAt;
 }

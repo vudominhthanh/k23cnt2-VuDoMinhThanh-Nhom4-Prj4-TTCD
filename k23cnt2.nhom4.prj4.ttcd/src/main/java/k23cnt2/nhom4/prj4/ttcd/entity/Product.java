@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "products", indexes = {
+@Table(indexes = {
         @Index(name = "idx_product_slug", columnList = "slug"),
         @Index(name = "idx_prod_cat_id", columnList = "category_id")
 })
@@ -20,7 +20,7 @@ public class Product {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @JoinColumn()
     private Category category;
 
     @Column(nullable = false, length = 100)
@@ -32,18 +32,17 @@ public class Product {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "image_url", columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String imageUrl;
 
-    @Column(name = "base_price", nullable = false)
+    @Column(nullable = false)
     private BigDecimal basePrice;
 
-    @Column(name = "is_active")
+    @Column()
     private Boolean isActive = true;
 
     @ManyToMany
     @JoinTable(
-            name = "product_option_mapping",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "option_id")
     )

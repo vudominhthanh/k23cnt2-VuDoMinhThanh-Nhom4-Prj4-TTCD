@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "order_item_options")
 @Data
 public class OrderItemOption {
     @EmbeddedId
@@ -15,9 +14,9 @@ public class OrderItemOption {
 
     @MapsId("orderItemId")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_item_id")
+    @JoinColumn()
     private OrderItem orderItem;
 
-    @Column(name = "price_at_buy")
+    @Column()
     private BigDecimal priceAtBuy;
 }

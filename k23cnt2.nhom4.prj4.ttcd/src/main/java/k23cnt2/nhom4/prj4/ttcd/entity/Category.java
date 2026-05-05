@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "categories")
 @Data
 public class Category {
     @Id
@@ -17,6 +16,6 @@ public class Category {
     @Column(unique = true, nullable = false, length = 100)
     private String slug;
 
-    @Column(name = "image_url", columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String imageUrl;
 }

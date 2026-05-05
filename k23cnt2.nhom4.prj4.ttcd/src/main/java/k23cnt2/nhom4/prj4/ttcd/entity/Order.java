@@ -7,10 +7,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "orders", indexes = {
-        @Index(name = "idx_order_code", columnList = "order_code"),
+@Table(indexes = {
+        @Index(name = "idx_order_code", columnList = "orderCode"),
         @Index(name = "idx_order_user_id", columnList = "user_id"),
-        @Index(name = "idx_order_status", columnList = "order_status")
+        @Index(name = "idx_order_status", columnList = "orderStatus")
 })
 @Data
 public class Order {
@@ -18,33 +18,33 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "order_code", unique = true, nullable = false, length = 20)
+    @Column(unique = true, nullable = false, length = 20)
     private String orderCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "voucher_id")
+    @JoinColumn()
     private Voucher voucher;
 
-    @Column(name = "total_amount", nullable = false)
+    @Column(nullable = false)
     private BigDecimal totalAmount;
 
-    @Column(name = "discount_amount")
+    @Column()
     private BigDecimal discountAmount = BigDecimal.ZERO;
 
-    @Column(name = "final_amount", nullable = false)
+    @Column(nullable = false)
     private BigDecimal finalAmount;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "order_status")
+    @Column()
     private ENUMS.OrderStatus orderStatus = ENUMS.OrderStatus.PENDING;
 
-    @Column(name = "shipping_address", columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String shippingAddress;
 
-    @Column(name = "created_at", insertable = false, updatable = false)
+    @Column(insertable = false, updatable = false)
     private LocalDateTime createdAt;
 }

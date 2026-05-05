@@ -6,7 +6,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "product_variants", indexes = {
+@Table(indexes = {
         @Index(name = "idx_var_product_id", columnList = "product_id")
 })
 @Data
@@ -16,12 +16,12 @@ public class ProductVariant {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Product product;
 
-    @Column(name = "size_name", length = 20)
+    @Column(length = 20)
     private String sizeName;
 
-    @Column(name = "extra_price")
+    @Column()
     private BigDecimal extraPrice = BigDecimal.ZERO;
 }

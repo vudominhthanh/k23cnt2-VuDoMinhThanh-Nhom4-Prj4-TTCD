@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users", indexes = {
+@Table(indexes = {
         @Index(name = "idx_user_phone", columnList = "phone")
 })
 @Data
@@ -21,18 +21,18 @@ public class User {
     @Column(unique = true, length = 100)
     private String email;
 
-    @Column(name = "full_name", length = 100)
+    @Column(length = 100)
     private String fullName;
 
-    @Column(name = "password_hash", nullable = false)
+    @Column(nullable = false)
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
     private ENUMS.UserRole role = ENUMS.UserRole.CUSTOMER;
 
-    @Column(name = "is_active")
+    @Column()
     private Boolean isActive = true;
 
-    @Column(name = "created_at", insertable = false, updatable = false)
+    @Column(insertable = false, updatable = false)
     private LocalDateTime createdAt;
 }

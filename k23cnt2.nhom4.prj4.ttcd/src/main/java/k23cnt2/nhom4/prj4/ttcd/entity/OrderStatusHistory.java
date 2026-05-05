@@ -6,7 +6,6 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "order_status_history")
 @Data
 public class OrderStatusHistory {
     @Id
@@ -14,19 +13,19 @@ public class OrderStatusHistory {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Order order;
 
-    @Column(name = "status_from", length = 50)
+    @Column(length = 50)
     private String statusFrom;
 
-    @Column(name = "status_to", length = 50)
+    @Column(length = 50)
     private String statusTo;
 
-    @Column(name = "changed_by")
+    @Column()
     private Integer changedBy;
 
-    @Column(name = "changed_at", insertable = false, updatable = false)
+    @Column(insertable = false, updatable = false)
     private LocalDateTime changedAt;
 
     @Column(columnDefinition = "TEXT")

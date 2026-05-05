@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Tea & Coffee</title>
+
+    <link rel="stylesheet" th:href="@{/css/admin-dashboard.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <h2><i class="fa-solid fa-mug-hot"></i> T&C Admin</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a th:href="@{/admin/dashboard}" class="active"><i class="fa-solid fa-chart-pie"></i> Tổng quan</a></li>
+            <li><a href="#"><i class="fa-solid fa-box"></i> Sản phẩm</a></li>
+            <li><a href="#"><i class="fa-solid fa-receipt"></i> Đơn hàng</a></li>
+            <li><a href="#"><i class="fa-solid fa-users"></i> Khách hàng</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+        <!-- Navbar -->
+        <header class="navbar">
+            <div class="nav-left">
+                <button id="toggle-btn" class="icon-btn"><i class="fa-solid fa-bars"></i></button>
+                <input type="text" placeholder="Tìm kiếm mã đơn hàng..." class="search-bar">
+            </div>
+            <div class="nav-right">
+                <!-- Lấy tên Admin từ Controller -->
+                <span class="admin-name" th:text="${adminName}">Admin</span>
+                <button class="logout-btn" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Thoát</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="content-header">
+                <h1>Tổng quan hệ thống</h1>
+            </div>
+
+            <!-- Thẻ Thống Kê Dữ Liệu -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-bag-shopping"></i></div>
+                    <div class="stat-info">
+                        <h3>Tổng đơn hàng</h3>
+                        <p th:text="${stats.totalOrders}">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-wallet"></i></div>
+                    <div class="stat-info">
+                        <h3>Doanh thu (VNĐ)</h3>
+                        <!-- Format số tiền bằng Thymeleaf -->
+                        <p th:text="${#numbers.formatDecimal(stats.totalRevenue, 0, 'COMMA', 0, 'POINT')}">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-user-plus"></i></div>
+                    <div class="stat-info">
+                        <h3>Khách hàng mới</h3>
+                        <p th:text="${stats.newCustomers}">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bảng Dữ Liệu Đơn Hàng -->
+            <div class="table-container">
+                <h3>Đơn hàng gần đây</h3>
+                <table class="data-table">
+                    <thead>
+                    <tr>
+                        <th>Mã Đơn</th>
+                        <th>Khách Hàng</th>
+                        <th>Tổng Tiền</th>
+                        <th>Trạng Thái</th>
+                        <th>Hành Động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Vòng lặp Thymeleaf -->
+                    <tr th:each="order : ${recentOrders}">
+                        <td th:text="${order.orderId}">ORD-000</td>
+                        <td th:text="${order.customerName}">Tên Khách</td>
+                        <td th:text="${#numbers.formatDecimal(order.amount, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</td>
+                        <td>
+                            <!-- Thay đổi màu sắc thẻ dựa trên trạng thái -->
+                            <span class="badge"
+                                  th:classappend="${order.status == 'Hoàn thành' ? 'badge-success' : (order.status == 'Đang pha chế' ? 'badge-warning' : 'badge-info')}"
+                                  th:text="${order.status}">
+                                        Trạng thái
+                                    </span>
+                        </td>
+                        <td><button class="action-btn">Chi tiết</button></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Link JS chuẩn Thymeleaf -->
+<script th:src="@{/js/admin-dashboard.js}"></script>
+</body>
+</html>
