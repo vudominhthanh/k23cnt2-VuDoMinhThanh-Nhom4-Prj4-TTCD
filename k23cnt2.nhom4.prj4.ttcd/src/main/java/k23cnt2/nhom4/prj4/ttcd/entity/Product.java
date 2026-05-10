@@ -43,8 +43,16 @@ public class Product {
 
     @ManyToMany
     @JoinTable(
+            name = "product_options",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "option_id")
     )
     private Set<ProductOption> options = new HashSet<>();
+
+    @OneToMany(mappedBy = "product")
+    private Set<ProductVariant> productVariants = new HashSet<>();
+
+    @OneToMany(mappedBy = "product")
+    private Set<Review> reviews = new HashSet<>();
+
 }

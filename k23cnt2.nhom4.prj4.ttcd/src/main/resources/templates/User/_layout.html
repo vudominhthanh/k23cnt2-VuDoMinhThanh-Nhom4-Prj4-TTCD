@@ -29,18 +29,18 @@
                     <li class="nav-item"><a class="nav-link" th:href="@{/menu}">Thực Đơn</a></li>
                     <li class="nav-item"><a class="nav-link" th:href="@{/about}">Về Chúng Tôi</a></li>
 
-                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <li class="nav-item" id="nav-isnot">
                         <a class="nav-link btn-login" th:href="@{/auth}">Đăng Nhập</a>
                     </li>
 
-                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <li class="nav-item dropdown" id="nav-is">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <span sec:authentication="name">User</span>
+                            <span>User</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" th:href="@{/customer/profile}">Hồ Sơ</a></li>
+                            <li><a class="dropdown-item" th:href="@{/customer/dashboard}">Hồ Sơ</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" th:href="@{/logout}">Đăng Xuất</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="handleLogout()">Đăng Xuất</a></li>
                         </ul>
                     </li>
                 </ul>

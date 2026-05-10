@@ -2,37 +2,34 @@ package k23cnt2.nhom4.prj4.ttcd.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @Controller
+@RequestMapping("/customer")
 public class UserController {
 
-    @GetMapping("/")
-    public String home() {
-        return "/User/home.html";
-    }
-
-    @GetMapping("/customer/dashboard")
+    @GetMapping("/dashboard")
     public String customerDashboard() {
-        return "/User/dashboard.html";
+        return "/dashboard.html";
     }
 
-    @GetMapping("/customer/profile")
+    @GetMapping("/profile")
     public String cus_profile() {
-        return "/User/profile.html";
+        return "/profile.html";
     }
 
-    @GetMapping("/customer/address")
+    @GetMapping("/address")
     public String cus_address() {
-        return "/User/address.html";
+        return "/address.html";
     }
 
-    @GetMapping("/customer/cart")
+    @GetMapping("/cart")
     public String cus_cart() {
-        return "/User/cart.html";
+        return "/cart.html";
     }
-    @GetMapping("/customer/order")
+    @GetMapping("/order")
     public String cus_order() {
-        return "/User/order.html";
+        return "/order.html";
     }
 }

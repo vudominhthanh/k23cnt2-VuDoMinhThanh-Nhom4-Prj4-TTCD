@@ -36,7 +36,19 @@ document.addEventListener("DOMContentLoaded", function () {
         functionDiv.classList.add('is-loading');
 
         try {
-            const res = await fetch(targetUrl);
+
+            const token = localStorage.getItem("token");
+
+            const fetchOptions = {
+                headers: {}
+            };
+
+            if (token !== null && token !== "") {
+                fetchOptions.headers['Authorization'] = 'Bearer ' + token;
+            }
+
+            const res = await fetch(targetUrl, fetchOptions);
+
             const html = await res.text();
 
             const doc = new DOMParser().parseFromString(html, 'text/html');
@@ -64,7 +76,6 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.reload();
     });
 
-    // 🔥 NAVBAR SCROLL
     window.addEventListener("scroll", () => {
         const navbar = document.querySelector(".custom-navbar");
         if (!navbar) return;
@@ -75,4 +86,41 @@ document.addEventListener("DOMContentLoaded", function () {
             navbar.classList.remove("scrolled");
         }
     });
+
+    const token = localStorage.getItem("token");
+
+    const navGuest = document.getElementById("nav-isnot");
+    const navUser = document.getElementById("nav-is");
+
+    if (token !== null && token !== "") {
+        navGuest.style.display = "none";
+        navUser.style.display = "block";
+
+        try{
+            const userNameSpan = document.querySelector("#nav-is span");
+
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+
+            const decodedToken = JSON.parse(jsonPayload);
+
+            if (userNameSpan && decodedToken.sub) {
+                userNameSpan.innerText = decodedToken.sub;
+            }
+        } catch (error) {
+            console.error("Lỗi giải token !", error);
+        }
+
+    } else {
+        navGuest.style.display = "block";
+        navUser.style.display = "none";
+    }
 });
+
+function handleLogout() {
+     localStorage.removeItem("token");
+     window.location.href = "/";
+}

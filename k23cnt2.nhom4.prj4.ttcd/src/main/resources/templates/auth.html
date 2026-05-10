@@ -1,33 +1,36 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tea & Coffee</title>
-    <link rel="stylesheet" href="/css/auth.css">
+    <title>Tea & Coffee Shop - Xác thực</title>
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
 <div class="container" id="container">
 
+    <div id="alert-msg" style="position: absolute; top: 10px; width: 100%; text-align: center; z-index: 999; font-weight: bold;"></div>
+
     <div class="form-container sign-up-container">
-        <form action="/register" method="POST">
+        <form id="registerForm">
             <h2>Đăng Ký 🍃</h2>
             <p class="subtitle">Trở thành hội viên ngay</p>
-            <input type="text" name="fullName" placeholder="Họ và tên" required />
-            <input type="email" name="email" placeholder="Email" required />
-            <input type="password" name="password" placeholder="Mật khẩu" required />
+            <input type="text" id="fullname" placeholder="Họ và tên" required />
+            <input type="email" id="email-re" placeholder="Email" required />
+            <input type="number" id="phone" placeholder="Số điện thoại" required />
+            <input type="password" id="password-re" placeholder="Mật khẩu" required />
             <button type="submit" class="btn-brown">Tạo tài khoản</button>
         </form>
     </div>
 
     <div class="form-container sign-in-container">
-        <form action="/login" method="POST">
+        <form id="loginForm">
             <h2>Đăng Nhập ☕</h2>
             <p class="subtitle">Mừng bạn quay trở lại</p>
-            <input type="email" name="email" placeholder="Email" required />
-            <input type="password" name="password" placeholder="Mật khẩu" required />
+            <input type="email" id="email" placeholder="Email" required />
+            <input type="password" id="password" placeholder="Mật khẩu" required />
             <a href="#" class="forgot-pass">Quên mật khẩu?</a>
             <button type="submit" class="btn-brown">Đăng nhập</button>
         </form>
@@ -37,19 +40,18 @@
         <div class="overlay">
             <div class="overlay-panel overlay-left">
                 <h2>Chào bạn mới! 🌱</h2>
-                <p>Nhập thông tin cá nhân và bắt đầu hành trình thưởng thức hương vị cùng chúng tôi.</p>
-                <button class="ghost" id="signUp">Đăng ký ngay</button>
+                <p>Nhập thông tin cá nhân và bắt đầu hành trình thưởng thức.</p>
+                <button type="button" class="ghost" id="signUp">Đăng ký ngay</button>
             </div>
-
             <div class="overlay-panel overlay-right">
                 <h2>Chào mừng trở lại! 🤎</h2>
-                <p>Để giữ kết nối với chúng tôi, vui lòng đăng nhập bằng thông tin của bạn.</p>
-                <button class="ghost" id="signIn">Đăng nhập</button>
+                <p>Để giữ kết nối với chúng tôi, vui lòng đăng nhập.</p>
+                <button type="button" class="ghost" id="signIn">Đăng nhập</button>
             </div>
         </div>
     </div>
 </div>
 
-<script src="/js/auth.js"></script>
+<script th:src="@{/js/auth.js}"></script>
 </body>
 </html>

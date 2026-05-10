@@ -1,5 +1,6 @@
 package k23cnt2.nhom4.prj4.ttcd.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,7 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationConverter;
+import org.springframework.security.web.authentication.AuthenticationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -25,19 +27,24 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-//            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf.disable())
+
+                .cors(cors -> cors.disable())
 
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/fonts/**", "/webjars/**").permitAll()
+                        .requestMatchers("/**/*.html", "/css/**", "/js/**", "/images/**", "/fonts/**", "/webjars/**").permitAll()
 
-                        .requestMatchers("/auth", "/", "/product-details","/staff-dashboard", "/customer/**", "/admin-dashboard").permitAll()
-
-                        .requestMatchers("/user/**").authenticated()
+                        .requestMatchers("/api/auth/**", "/auth", "/api/products/**", "/", "/product-details").permitAll()
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+
+                        .requestMatchers("/api/**", "/customer/**").authenticated()
 
                         .anyRequest().authenticated()
                 )
@@ -49,16 +56,19 @@ public class SecurityConfig {
                 )
                 .logout((logout) -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/auth")
+                        .logoutSuccessUrl("/")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()
                 )
                 .rememberMe(remember -> remember
-                        .key("uniqueAndSecretKey") // <--- QUAN TRỌNG: Key cố định để sống sót qua restart
-                        .tokenValiditySeconds(86400) // Thời gian nhớ: 86400 giây = 1 ngày (hoặc 7 ngày tùy bạn)
+                        .key("uniqueAndSecretKey")
+                        .tokenValiditySeconds(86400)
                         .rememberMeParameter("remember-me")
                 );
+
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 }

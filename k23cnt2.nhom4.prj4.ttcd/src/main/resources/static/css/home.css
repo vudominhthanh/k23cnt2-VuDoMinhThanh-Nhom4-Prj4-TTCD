@@ -19,7 +19,7 @@
 
         .hero-title {
             font-family: 'Playfair Display', serif;
-            font-size: 3.5rem; /* Sửa từ 15rem về 3.5rem - Đây là lý do chính gây trống */
+            font-size: 3.5rem;
             font-weight: 700;
             line-height: 1.2;
             color: var(--coffee-dark);
