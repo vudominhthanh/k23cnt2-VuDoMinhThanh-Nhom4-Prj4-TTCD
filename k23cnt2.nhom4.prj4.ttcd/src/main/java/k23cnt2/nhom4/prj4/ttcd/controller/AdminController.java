@@ -25,7 +25,7 @@ public class AdminController {
         // Đẩy dữ liệu sang Thymeleaf
         model.addAttribute("adminName", "Admin Chanh Leo");
         model.addAttribute("stats", stats);
-        model.addAttribute("recentOrders", recentOrders);
+        model.addAttribute("recentOrders", recentOrders);                                                      
 
         return "/Admin/admin-dashboard.html";
     }
