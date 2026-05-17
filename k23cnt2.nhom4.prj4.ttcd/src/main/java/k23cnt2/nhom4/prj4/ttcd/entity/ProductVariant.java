@@ -2,6 +2,9 @@ package k23cnt2.nhom4.prj4.ttcd.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
@@ -9,7 +12,9 @@ import java.math.BigDecimal;
 @Table(indexes = {
         @Index(name = "idx_var_product_id", columnList = "product_id")
 })
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = "product")
 public class ProductVariant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

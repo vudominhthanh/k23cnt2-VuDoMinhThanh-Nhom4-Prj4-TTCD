@@ -18,7 +18,6 @@ public class PrefixNamingStrategy implements PhysicalNamingStrategy {
         return new Identifier(PREFIX + name.getText(), name.isQuoted());
     }
 
-    // giữ nguyên các cái khác
     @Override public Identifier toPhysicalCatalogName(Identifier name, JdbcEnvironment context) { return name; }
     @Override public Identifier toPhysicalSchemaName(Identifier name, JdbcEnvironment context) { return name; }
     @Override public Identifier toPhysicalSequenceName(Identifier name, JdbcEnvironment context) { return name; }

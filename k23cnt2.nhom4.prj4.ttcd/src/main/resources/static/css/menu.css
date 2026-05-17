@@ -1,0 +1,193 @@
+.menu-wrapper {
+    width: 100%;
+    background-color: rgba(252, 250, 248, 0.85);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    backdrop-filter: none;
+}
+
+.form-control:focus, .form-select:focus, .form-check-input:focus {
+    box-shadow: none;
+    border-color: var(--tea-green);
+}
+
+.form-check-input:checked {
+    background-color: var(--tea-green);
+    border-color: var(--tea-green);
+}
+
+/* 2. ĐỒNG BỘ HIỆU ỨNG NÚT BẤM */
+.btn-theme {
+    background-color: var(--tea-green);
+    color: white;
+    border: 2px solid var(--tea-green);
+    border-radius: 25px;
+    font-weight: 600;
+    padding: 8px 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-theme:hover {
+    background-color: var(--coffee-dark);
+    border-color: var(--coffee-dark);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(62, 39, 35, 0.2);
+}
+
+.btn-outline-theme {
+    background-color: transparent;
+    color: var(--coffee-dark);
+    border: 2px solid var(--coffee-light);
+    border-radius: 25px;
+    font-weight: 600;
+    padding: 8px 15px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-theme:hover {
+    background-color: var(--coffee-dark);
+    border-color: var(--coffee-dark);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(62, 39, 35, 0.2);
+}
+
+/* Sidebar Bộ lọc */
+.filter-sidebar {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    border: 1px solid rgba(141, 110, 99, 0.1);
+}
+
+.filter-title {
+    color: var(--coffee-dark);
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--tea-green);
+    padding-bottom: 10px;
+    display: inline-block;
+}
+
+/* Form nhập khoảng giá */
+.price-input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.price-input-group input {
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid #ced4da;
+}
+
+/* 3. LÀM NỔI BẬT KHUNG SẢN PHẨM */
+.product-card {
+    border: 1px solid rgba(141, 110, 99, 0.2); /* Thêm viền nhẹ */
+    border-radius: 18px;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    background: white;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.05); /* Đổ bóng mặc định đậm hơn xíu */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(62, 39, 35, 0.18); /* Đổ bóng to khi lướt chuột */
+    border-color: var(--tea-green); /* Viền chuyển xanh sáng bừng lên */
+}
+
+.product-img-wrapper {
+    position: relative;
+    padding-top: 100%;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.product-img-wrapper img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.product-card:hover .product-img-wrapper img {
+    transform: scale(1.15); /* Zoom ảnh to hơn chút */
+}
+
+.category-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background-color: var(--coffee-light);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    z-index: 2;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.product-title {
+    color: var(--coffee-dark);
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.product-title:hover {
+    color: var(--tea-green);
+}
+
+.product-price {
+    color: var(--tea-green);
+    font-weight: 800;
+    font-size: 1.25rem;
+}
+
+.rating-stars {
+    color: #ffc107;
+    font-size: 0.9rem;
+}
+
+/* Thanh Search & Sort */
+.search-bar .form-control {
+    border-radius: 25px 0 0 25px;
+    border: 2px solid var(--coffee-light);
+    border-right: none;
+    padding-left: 20px;
+}
+
+.search-bar .btn {
+    border-radius: 0 25px 25px 0;
+    background-color: var(--tea-green);
+    color: white;
+    border: 2px solid var(--tea-green);
+    padding: 0 20px;
+}
+
+.search-bar .btn:hover {
+    background-color: var(--coffee-dark);
+    border-color: var(--coffee-dark);
+}
+
+.sort-select {
+    border-radius: 25px;
+    border: 2px solid var(--coffee-light);
+    color: var(--coffee-dark);
+    font-weight: 500;
+}

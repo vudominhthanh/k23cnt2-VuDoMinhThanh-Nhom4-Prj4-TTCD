@@ -2,6 +2,9 @@ package k23cnt2.nhom4.prj4.ttcd.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,7 +16,9 @@ import java.util.Set;
         @Index(name = "idx_product_slug", columnList = "slug"),
         @Index(name = "idx_prod_cat_id", columnList = "category_id")
 })
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = {"productVariants", "productOptions", "category"})
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,7 +54,7 @@ public class Product {
     )
     private Set<ProductOption> options = new HashSet<>();
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<ProductVariant> productVariants = new HashSet<>();
 
     @OneToMany(mappedBy = "product")

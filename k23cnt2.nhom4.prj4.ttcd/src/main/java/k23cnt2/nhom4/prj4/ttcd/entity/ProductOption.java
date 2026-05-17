@@ -2,11 +2,16 @@ package k23cnt2.nhom4.prj4.ttcd.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = "products")
 public class ProductOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

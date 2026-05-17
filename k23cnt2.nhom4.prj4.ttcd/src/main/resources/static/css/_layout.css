@@ -15,7 +15,7 @@ body {
     background-attachment: fixed;
     color: var(--text-main);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin-top: 76px; /* Chừa khoảng trống cho fixed navbar */
+    margin-top: 76px;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -62,7 +62,7 @@ body {
     box-shadow: 0 1px 10px rgba(0,0,0,0.03);
 }
 
-/* Lớp được thêm vào bằng JS khi cuộn chuột */
+
 .custom-navbar.scrolled {
     padding: 8px 0;
     background-color: rgba(240, 250, 240, 0.7);
@@ -109,7 +109,7 @@ body {
 }
 
 .btn-login {
-    background-color: var(--tea-green);
+    background-color: var(--tea-green)
     color: white !important;
     border-radius: 25px;
     padding: 6px 20px !important;
@@ -130,7 +130,7 @@ body {
 
 .main-content {
     flex: 1 0 auto;
-    padding: 40px 0;
+    padding: 75px 0 40px 0;
     display: flex;
     align-items: stretch;
 }
@@ -141,4 +141,19 @@ body {
     color: green;
     padding: 15px 0;
     margin-top: auto;
+}
+
+@keyframes fadeUpAnim {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-up {
+    animation: fadeUpAnim 1.0s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

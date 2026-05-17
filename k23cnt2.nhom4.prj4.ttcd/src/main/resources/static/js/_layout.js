@@ -58,6 +58,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             functionDiv.innerHTML = newDiv.innerHTML;
 
+            functionDiv.classList.remove('animate-fade-up');
+            void functionDiv.offsetWidth;
+            functionDiv.classList.add('animate-fade-up');
+
             window.history.pushState({}, '', targetUrl);
 
             setActiveLink(targetUrl);

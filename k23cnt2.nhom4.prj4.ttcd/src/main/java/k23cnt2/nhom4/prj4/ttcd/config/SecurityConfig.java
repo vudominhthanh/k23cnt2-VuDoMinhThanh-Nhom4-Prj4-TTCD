@@ -40,11 +40,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/**/*.html", "/css/**", "/js/**", "/images/**", "/fonts/**", "/webjars/**").permitAll()
 
-                        .requestMatchers("/api/auth/**", "/auth", "/api/products/**", "/", "/product-details").permitAll()
+                        .requestMatchers("/api/auth/**", "/auth", "/api/products/**", "/", "/product-details", "/menu", "/about").permitAll()
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
-                        .requestMatchers("/api/**", "/customer/**").authenticated()
+                        .requestMatchers("/api/**", "/user/**").authenticated()
 
                         .anyRequest().authenticated()
                 )
