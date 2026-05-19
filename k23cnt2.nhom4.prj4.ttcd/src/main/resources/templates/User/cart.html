@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{User/_layout}">
+<body>
+<div layout:fragment="content">
+    <div class="dashboard-layout">
+        <aside class="db-sidebar bg-dashboard-card py-4">
+            <div class="text-center mb-4 px-3">
+                <img src="https://ui-avatars.com/api/?name=User&background=689f38&color=fff" class="rounded-circle border border-2 border-white shadow-sm" style="width: 65px; height: 65px;">
+                <h6 class="fw-bold mt-3 mb-0 text-dark user-placeholder-name">Tài khoản</h6>
+            </div>
+            <nav class="db-menu">
+                <a th:href="@{/customer/dashboard}" class="sidebar-link cus-link"><i class="fa-solid fa-house-user"></i>Tổng quan</a>
+                <a th:href="@{/customer/cart}" class="sidebar-link cus-link active"><i class="fa-solid fa-basket-shopping"></i>Giỏ hàng</a>
+                <a th:href="@{/customer/orders}" class="sidebar-link cus-link"><i class="fa-solid fa-clock-rotate-left"></i>Đơn hàng</a>
+                <a th:href="@{/customer/settings}" class="sidebar-link cus-link"><i class="fa-solid fa-user-gear"></i>Cài đặt</a>
+                <a href="javascript:void(0)" class="sidebar-link opacity-50" style="cursor:not-allowed;"><i class="fa-solid fa-map-location-dot"></i>Địa chỉ <span class="badge-dev">Đang phát triển</span></a>
+                <a href="javascript:void(0)" class="sidebar-link opacity-50" style="cursor:not-allowed;"><i class="fa-solid fa-ticket"></i>Voucher <span class="badge-dev">Đang phát triển</span></a>
+            </nav>
+        </aside>
+
+        <main class="db-stage">
+            <div class="animate-fade-up">
+                <h4 class="fw-bold mb-4" style="color: var(--coffee-dark);">Giỏ hàng của tôi</h4>
+                <div class="row g-3">
+                    <div class="col-xl-7">
+                        <div class="d-flex flex-column gap-3" id="cart-items-wrapper">
+                        </div>
+                    </div>
+                    <div class="col-xl-5">
+                        <div class="bg-dashboard-card p-4 position-sticky" style="top:90px;">
+                            <h6 class="fw-bold mb-3">Tóm tắt đơn hàng</h6>
+                            <div class="d-flex justify-content-between mb-2 small text-muted">
+                                <span>Tạm tính:</span><span class="fw-bold text-dark" id="summary-subtotal">0 đ</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3 small text-muted">
+                                <span>Phí giao hàng:</span><span class="text-success fw-bold">Miễn phí</span>
+                            </div>
+                            <hr class="my-2">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <span class="fw-bold">Tổng cộng:</span><span class="fw-bold fs-4 text-danger" id="summary-total">0 đ</span>
+                            </div>
+                            <button class="btn w-100 py-2.5 text-white fw-bold shadow-sm" style="background-color: var(--tea-green); border-radius:25px;">
+                                <i class="fa-solid fa-credit-card me-2"></i>Thanh toán ngay
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script th:src="@{/js/apiClient.js}"></script>
+    <script>
+        async function initCartView() {
+            const user = await window.checkAuthAndGetProfile();
+            if(user) document.querySelectorAll('.user-placeholder-name').forEach(el => el.innerText = user.fullName || user.username);
+
+            // Render mẫu cứng đồ uống khớp UI 70%
+            const wrapper = document.getElementById('cart-items-wrapper');
+            wrapper.innerHTML = `
+                <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="d-flex align-items-center" style="min-width:180px; flex:1;">
+                            <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=100" class="rounded-3 me-3" style="width:60px; height:60px; object-fit:cover;">
+                            <div>
+                                <h6 class="fw-bold mb-0 text-dark small">Cà Phê Sữa Đá</h6>
+                                <small class="text-muted" style="font-size:0.75rem;">Size: L | Đá: Mặc định</small>
+                            </div>
+                        </div>
+                        <div class="input-group" style="width:90px; height:30px;">
+                            <button class="btn btn-sm btn-outline-secondary py-0">-</button>
+                            <input type="text" class="form-control form-control-sm text-center fw-bold bg-light" value="1" readonly>
+                            <button class="btn btn-sm btn-outline-secondary py-0">+</button>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-end gap-3" style="min-width:100px;">
+                            <span class="fw-bold text-danger" style="font-size:0.9rem;">39.000 đ</span>
+                            <button class="btn btn-link text-muted p-0"><i class="fa-regular fa-trash-can"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('summary-subtotal').innerText = '39.000 đ';
+            document.getElementById('summary-total').innerText = '39.000 đ';
+        }
+        initCartView();
+    </script>
+</div>
+</body>
+</html>

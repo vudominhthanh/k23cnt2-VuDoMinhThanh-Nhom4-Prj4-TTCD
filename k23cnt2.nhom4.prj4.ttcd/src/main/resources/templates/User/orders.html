@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{User/_layout}">
+<body>
+<div layout:fragment="content">
+    <div class="dashboard-layout">
+        <aside class="db-sidebar bg-dashboard-card py-4">
+            <div class="text-center mb-4 px-3">
+                <img src="https://ui-avatars.com/api/?name=User&background=689f38&color=fff" class="rounded-circle border border-2 border-white shadow-sm" style="width: 65px; height: 65px;">
+                <h6 class="fw-bold mt-3 mb-0 text-dark user-placeholder-name">Tài khoản</h6>
+            </div>
+            <nav class="db-menu">
+                <a th:href="@{/customer/dashboard}" class="sidebar-link cus-link"><i class="fa-solid fa-house-user"></i>Tổng quan</a>
+                <a th:href="@{/customer/cart}" class="sidebar-link cus-link"><i class="fa-solid fa-basket-shopping"></i>Giỏ hàng</a>
+                <a th:href="@{/customer/orders}" class="sidebar-link cus-link active"><i class="fa-solid fa-clock-rotate-left"></i>Đơn hàng</a>
+                <a th:href="@{/customer/settings}" class="sidebar-link cus-link"><i class="fa-solid fa-user-gear"></i>Cài đặt</a>
+                <a href="javascript:void(0)" class="sidebar-link opacity-50" style="cursor:not-allowed;"><i class="fa-solid fa-map-location-dot"></i>Địa chỉ <span class="badge-dev">Đang phát triển</span></a>
+                <a href="javascript:void(0)" class="sidebar-link opacity-50" style="cursor:not-allowed;"><i class="fa-solid fa-ticket"></i>Voucher <span class="badge-dev">Đang phát triển</span></a>
+            </nav>
+        </aside>
+
+        <main class="db-stage">
+            <div class="animate-fade-up">
+                <h4 class="fw-bold mb-4" style="color: var(--coffee-dark);">Lịch sử mua hàng</h4>
+                <div class="bg-dashboard-card p-4 d-flex flex-column gap-3">
+                    <div class="border-bottom pb-3">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
+                            <span class="text-muted small">Mã đơn: <strong class="text-dark">#DH1002</strong></span>
+                            <span class="badge bg-warning text-dark rounded-pill" style="font-size:0.75rem;">Đang chuẩn bị món</span>
+                        </div>
+                        <p class="mb-1 small text-dark fw-medium">1x Cà Phê Sữa Đá (Size L), 1x Trà Đào Cam Sả</p>
+                        <div class="d-flex justify-content-between align-items-center small pt-2">
+                            <span class="text-muted opacity-75" style="font-size:0.75rem;">18/05/2026</span>
+                            <span class="fw-bold text-danger">68.000 đ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script th:src="@{/js/apiClient.js}"></script>
+    <script>
+        async function initOrdersView() {
+            const user = await window.checkAuthAndGetProfile();
+            if(user) document.querySelectorAll('.user-placeholder-name').forEach(el => el.innerText = user.fullName || user.username);
+        }
+        initOrdersView();
+    </script>
+</div>
+</body>
+</html>

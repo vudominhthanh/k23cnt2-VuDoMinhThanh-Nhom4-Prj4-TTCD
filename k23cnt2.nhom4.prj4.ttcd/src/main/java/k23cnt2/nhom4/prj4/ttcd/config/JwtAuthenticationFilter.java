@@ -1,7 +1,9 @@
 package k23cnt2.nhom4.prj4.ttcd.config;
 
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,6 +17,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -35,9 +39,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (StringUtils.hasText(jwt) && jwtUtils.validateToken(jwt)) {
 
-                String email = jwtUtils.getUsernameFromToken(jwt);
+//                String email = jwtUtils.getUsernameFromToken(jwt);
+
+                Claims claims = jwtUtils.getClaimsFromToken(jwt);
+                String email = claims.getSubject();
+
+                List<String> roles = (List<String>) claims.get("roles");
+                List<SimpleGrantedAuthority> authorities = null;
+
+                if (roles != null) {
+                    authorities = roles.stream()
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList());
+                }
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+                if (authorities == null) {
+                    authorities = userDetails.getAuthorities().stream()
+                            .map(auth -> new SimpleGrantedAuthority(auth.getAuthority()))
+                            .collect(Collectors.toList());
+                }
+
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);

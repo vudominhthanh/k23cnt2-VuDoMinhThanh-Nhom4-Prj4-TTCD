@@ -263,14 +263,13 @@ async function openProductPopup(productId) {
 
         const modalEl = document.getElementById('productModal');
 
-        modalEl.addEventListener('hidden.bs.modal', () => {
-            document.body.classList.remove('modal-open');
-            document.querySelectorAll('.modal-backdrop')
-                .forEach(e => e.remove());
-        });
+        if (modalEl.parentNode !== document.body) {
+                    document.body.appendChild(modalEl);
+                }
 
-        const myModal = new bootstrap.Modal(modalEl);
+        const myModal = bootstrap.Modal.getOrCreateInstance(modalEl);
         myModal.show();
+
     } catch (err) {
         console.error("Lỗi mở pop-up: ", err);
     }
