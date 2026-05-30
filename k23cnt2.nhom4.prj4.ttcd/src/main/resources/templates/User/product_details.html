@@ -75,6 +75,7 @@
                                 <input type="radio" name="variantId"
                                        th:id="'size_' + ${variant.id}"
                                        th:value="${variant.id}"
+                                       th:checked="${iterStat.first}"
                                        th:data-price="${variant.extraPrice}"
                                        class="price-modifier" required>
                                 <label th:for="'size_' + ${variant.id}">
@@ -107,7 +108,6 @@
                                        th:id="'sugar_' + ${sugar.id}"
                                        th:value="${sugar.id}"
                                        th:data-price="${sugar.additionalPrice}"
-                                       th:checked="${iterStat.first}"
                                        class="option-item-val">
                                 <label th:for="'sugar_' + ${sugar.id}" th:text="${sugar.optionName}"></label>
                             </div>
