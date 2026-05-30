@@ -22,6 +22,9 @@ public class OrderItem {
     @Column(length = 20)
     private String variantName;
 
+    @Column(length = 255)
+    private String note;
+
     @Column(nullable = false)
     private Integer quantity;
 

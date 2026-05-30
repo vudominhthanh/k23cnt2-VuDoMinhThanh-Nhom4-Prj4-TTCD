@@ -57,6 +57,9 @@ public class AuthService {
 
     public AuthResponse login(LoginRequest loginRequest) {
 
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy email"));
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
@@ -68,6 +71,8 @@ public class AuthService {
 
         String token = jwtUtils.generateToken(authentication);
 
-        return new AuthResponse(token, "Đăng nhập thành công !");
+        String userRole = user.getRole() != null ? user.getRole().name() : "CUSTOMER";
+
+        return new AuthResponse(token, "Đăng nhập thành công !", userRole);
     }
 }

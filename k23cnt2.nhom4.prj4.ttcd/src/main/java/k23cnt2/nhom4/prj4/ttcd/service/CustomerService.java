@@ -12,6 +12,7 @@ import k23cnt2.nhom4.prj4.ttcd.repository.CartRepository;
 import k23cnt2.nhom4.prj4.ttcd.repository.OrderRepository;
 import k23cnt2.nhom4.prj4.ttcd.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ public class CustomerService {
     private UserRepository userRepository;
 
     @Autowired
+    @Lazy
     private PasswordEncoder passwordEncoder;
 
     @Autowired

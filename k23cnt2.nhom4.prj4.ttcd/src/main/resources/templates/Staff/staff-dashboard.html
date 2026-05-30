@@ -12,95 +12,130 @@
 <div class="container-fluid h-100 p-0">
     <div class="row g-0 h-100">
 
-        <aside class="col-md-4 col-lg-3 border-end bg-light d-flex flex-column h-100">
+        <aside class="col-md-3 border-end bg-light d-flex flex-column h-100">
             <div class="p-3 border-bottom bg-white sticky-top">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="fw-bold m-0"><i class="fas fa-clipboard-list me-2"></i>ĐƠN ĐANG XỬ LÝ</h6>
+                    <h6 class="fw-bold m-0"><i class="fas fa-clipboard-list me-2"></i>ĐƠN HỆ THỐNG</h6>
                     <span class="badge bg-danger rounded-pill" id="order-count">0</span>
                 </div>
+
+                <div class="d-flex gap-2 mb-2">
+                    <button id="btn-back-to-pos" class="btn btn-warning btn-sm flex-grow-1 fw-bold" style="display: none;" onclick="switchToPOSMode()">
+                        <i class="fas fa-arrow-left me-1"></i>POS
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm fw-bold" onclick="logoutStaff()">
+                        <i class="fas fa-sign-out-alt"></i> Thoát
+                    </button>
+                </div>
+
                 <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
-                    <input type="text" id="orderSearch" class="form-control border-start-0" placeholder="Tìm mã đơn hàng...">
+                    <input type="text" id="orderSearch" class="form-control" placeholder="Tìm mã đơn...">
                 </div>
             </div>
-
-            <div id="active-orders-grid" class="order-list-container p-2 flex-grow-1 overflow-auto">
+            <div class="order-list-container p-2 flex-grow-1 overflow-auto">
                 <div class="row g-2" id="order-grid-inner">
                 </div>
             </div>
         </aside>
 
-        <main class="col-md-8 col-lg-9 d-flex flex-column h-100 bg-white">
-            <div class="row g-0 h-100">
-                <section class="col-md-8 border-end d-flex flex-column h-100">
-                    <div class="p-3 border-bottom d-flex align-items-center gap-3">
-                        <div class="input-group flex-grow-1">
-                            <span class="input-group-text"><i class="fas fa-mug-hot"></i></span>
-                            <input type="text" id="productSearch" class="form-control" placeholder="Tìm món nhanh...">
-                        </div>
-                        <div class="dropdown">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">Danh mục</button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Cà phê</a></li>
-                                <li><a class="dropdown-item" href="#">Trà tươi</a></li>
-                            </ul>
-                        </div>
+        <main class="col-md-6 d-flex flex-column h-100 bg-white border-end">
+            <div id="pos-menu-view" class="d-flex flex-column h-100">
+                <div class="p-3 border-bottom d-flex align-items-center gap-3 bg-white">
+                    <input type="text" id="productSearch" class="form-control" placeholder="Tìm món nhanh...">
+                </div>
+                <div class="menu-container p-3 overflow-auto flex-grow-1 bg-light">
+                    <div class="row row-cols-2 row-cols-lg-3 g-3" id="product-list">
                     </div>
-                    <div class="menu-container p-3 overflow-auto flex-grow-1 bg-light">
-                        <div class="row row-cols-2 row-cols-lg-3 row-cols-xl-4 g-3" id="product-list">
-                        </div>
-                    </div>
-                </section>
+                </div>
+            </div>
 
-                <section class="col-md-4 d-flex flex-column h-100">
-                    <div class="p-3 border-bottom bg-white">
-                        <h6 class="fw-bold m-0 text-uppercase">Hóa đơn chờ</h6>
-                    </div>
-                    <div class="cart-items flex-grow-1 overflow-auto p-3" id="current-cart">
-                    </div>
-                    <div class="order-summary p-3 bg-dark text-white rounded-top-4 shadow-lg">
-                        <div class="d-flex justify-content-between mb-1">
-                            <small>Tạm tính</small> <span id="sub-total">0đ</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2 text-warning">
-                            <small>Giảm giá</small> <span id="discount-amount">-0đ</span>
-                        </div>
-                        <div class="d-flex justify-content-between fw-bold fs-5 border-top pt-2">
-                            <span>TỔNG</span> <span class="text-success" id="final-total">0đ</span>
-                        </div>
-                        <button class="btn btn-success btn-lg w-100 mt-3 fw-bold">XÁC NHẬN & IN BILL</button>
-                    </div>
-                </section>
+            <div id="order-detail-view" class="d-flex flex-column h-100 p-4" style="display: none !important;">
+                <h4 class="fw-bold text-primary mb-3" id="viewOrderCode">Chi tiết đơn #----</h4>
+                <div class="flex-grow-1 overflow-auto border rounded p-3 bg-light mb-3" id="viewOrderItems">
+                </div>
             </div>
         </main>
+
+        <aside class="col-md-3 d-flex flex-column h-100">
+            <div id="pos-cart-side" class="d-flex flex-column h-100" style="display: flex;">
+                <div class="p-3 border-bottom bg-white">
+                    <h6 class="fw-bold m-0 text-uppercase">Hóa đơn tại quầy</h6>
+                </div>
+                <div class="cart-items flex-grow-1 overflow-auto p-3 bg-white" id="current-cart">
+                </div>
+                <div class="order-summary p-3 bg-dark text-white rounded-top-4 shadow-lg mt-auto">
+                    <div class="d-flex justify-content-between mb-2 text-warning">
+                        <small>Giảm giá</small> <span id="discount-amount">0đ</span>
+                    </div>
+                    <div class="d-flex justify-content-between fw-bold fs-5 border-top pt-2 border-secondary">
+                        <span>TỔNG</span> <span class="text-success" id="final-total">0đ</span>
+                    </div>
+                    <button class="btn btn-success btn-lg w-100 mt-3 fw-bold" onclick="createOrderAtCounter()">XÁC NHẬN & IN BILL</button>
+                </div>
+            </div>
+
+            <div id="order-action-side" class="d-flex flex-column h-100 p-3 bg-light" style="display: none !important;">
+                <h6 class="fw-bold text-uppercase mb-3">Xử lý đơn hàng</h6>
+                <div class="mb-4 border p-3 rounded bg-white shadow-sm">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Trạng thái:</span> <span id="viewStatus" class="badge bg-secondary">---</span>
+                    </div>
+                    <div class="d-flex justify-content-between fw-bold">
+                        <span>Tổng tiền đơn:</span> <span class="text-danger fs-5" id="viewTotal">0đ</span>
+                    </div>
+                </div>
+                <div class="d-flex flex-column gap-2 mt-auto">
+                    <button id="btnConfirm" class="btn btn-primary btn-lg fw-bold w-100">XÁC NHẬN ĐƠN</button>
+                    <button id="btnComplete" class="btn btn-success btn-lg fw-bold w-100">HOÀN THÀNH</button>
+                    <button id="btnCancel" class="btn btn-outline-danger w-100 mt-3">HỦY ĐƠN HÀNG</button>
+                </div>
+            </div>
+        </aside>
+
     </div>
 </div>
 
-<div class="modal fade" id="orderDetailModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="productOptionsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content shadow-lg border-0">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title fw-bold" id="modalOrderCode">Chi tiết đơn #----</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold" id="modalProductName">Tên món</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body p-4">
-                <div id="modalOrderItems" class="mb-4">
+            <div class="modal-body">
+                <div class="text-primary fw-bold fs-5 mb-3" id="modalBasePrice">0đ</div>
+
+                <h6 class="fw-bold border-bottom pb-2">Chọn Size</h6>
+                <div id="modalSizes" class="mb-3 d-flex flex-wrap gap-2">
                 </div>
-                <div class="p-3 bg-light rounded-3 border">
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Trạng thái:</span> <span id="modalStatus" class="badge">---</span>
+
+                <h6 class="fw-bold border-bottom pb-2 mt-3">Topping (Có thể chọn nhiều)</h6>
+                <div id="modalOptions" class="mb-3">
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-6">
+                        <h6 class="fw-bold border-bottom pb-2">Lượng Đường</h6>
+                        <select class="form-select form-select-sm" id="sugarLevel">
+                            <option value="100">100% Đường</option>
+                            <option value="70">70% Đường</option>
+                            <option value="50">50% Đường</option>
+                            <option value="0">Không Đường</option>
+                        </select>
                     </div>
-                    <div class="d-flex justify-content-between fw-bold">
-                        <span>Tổng tiền:</span> <span class="text-primary" id="modalTotal">0đ</span>
+                    <div class="col-6">
+                        <h6 class="fw-bold border-bottom pb-2">Lượng Đá</h6>
+                        <select class="form-select form-select-sm" id="iceLevel">
+                            <option value="100">100% Đá</option>
+                            <option value="50">50% Đá (Ít Đá)</option>
+                            <option value="0">Không Đá</option>
+                            <option value="hot">Đồ Nóng</option>
+                        </select>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer flex-column p-3 bg-light">
-                <div class="d-flex w-100 gap-2 mb-2">
-                    <button id="btnConfirm" class="btn btn-primary flex-grow-1 fw-bold">XÁC NHẬN ĐƠN</button>
-                    <button id="btnComplete" class="btn btn-success flex-grow-1 fw-bold">HOÀN THÀNH</button>
-                </div>
-                <button id="btnCancel" class="btn btn-outline-danger w-100">HỦY ĐƠN HÀNG</button>
+            <div class="modal-footer border-top-0 pt-0">
+                <button type="button" class="btn btn-primary w-100 fw-bold btn-lg" id="btnConfirmAddToCart">THÊM VÀO GIỎ HÀNG</button>
             </div>
         </div>
     </div>

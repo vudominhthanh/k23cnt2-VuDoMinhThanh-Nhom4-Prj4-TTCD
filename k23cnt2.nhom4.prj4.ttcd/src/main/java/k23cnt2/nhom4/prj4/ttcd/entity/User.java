@@ -34,5 +34,5 @@ public class User {
     private Boolean isActive = true;
 
     @Column(insertable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

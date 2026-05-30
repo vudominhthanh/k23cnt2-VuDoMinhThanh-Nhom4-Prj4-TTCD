@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class StaffController {
 
-    @GetMapping("/staff-dashboard")
+    @GetMapping("/staff/dashboard")
     public String staffDashboard() {
         return "/Staff/staff-dashboard.html";
     }

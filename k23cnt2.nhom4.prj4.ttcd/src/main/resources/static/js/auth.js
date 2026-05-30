@@ -76,10 +76,17 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         if(response.ok) {
 
             localStorage.setItem("token", data.token);
+            localStorage.setItem('role', data.role);
 
             alert(data.message);
 
-            window.location.href = '/';
+            if (data.role === 'STAFF') {
+                window.location.href = '/staff/dashboard';
+            } else if (data.role === 'ADMIN') {
+                window.location.href = '/admin/dashboard';
+            } else {
+                window.location.href = '/';
+            }
 
         } else {
             alert(data.message || "Dang nhap that bai")

@@ -39,34 +39,39 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        productGrid.innerHTML = products.map(p => `
+        productGrid.innerHTML = products.map(p => {
+            const prdId = p.id || p.productId;
+
+            return `
             <div class="col animate-fade-up">
                 <div class="product-card card">
-                    <div class="product-img-wrapper">
-                        <!-- p.imageUrl từ DTO -->
-                        <img src="${p.imageUrl}" alt="${p.name}">
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <!-- p.name từ DTO -->
-                        <a href="#" class="product-title text-truncate" title="${p.name}"><i class="fa-solid fa-fire-flame-curved me-2" style="color: #e25822; font-size: 0.9rem;"></i>${p.name}</a>
 
-                        <!-- p.averageRating và p.totalReviews từ DTO -->
+                    <div class="product-img-wrapper">
+                        <a href="/product-detail?id=${prdId}" class="cus-link">
+                            <img src="${p.imageUrl}" alt="${p.name}">
+                        </a>
+                    </div>
+
+                    <div class="card-body d-flex flex-column">
+
+                        <a href="/product-detail?id=${prdId}" class="product-title text-truncate cus-link" title="${p.name}">
+                            <i class="fa-solid fa-fire-flame-curved me-2" style="color: #e25822; font-size: 0.9rem;"></i>${p.name}
+                        </a>
+
                         <div class="rating-stars mb-2">
                             <span style="color: #ffc107;"><i class="fa-solid fa-star"></i> ${p.averageRating}</span>
                             <span class="text-muted ms-1" style="font-size: 0.8rem;">(${p.totalReviews})</span>
                         </div>
 
-                        <!-- p.startingPrice từ DTO (Định dạng tiền Việt) -->
                         <p class="product-price mb-3"><i class="fa-solid fa-tag me-2" style="font-size: 0.9rem; color: var(--coffee-light);"></i>${p.startingPrice.toLocaleString('vi-VN')} đ</p>
 
-                        <!-- Nút gọi hàm thêm vào giỏ hàng -->
-                        <button class="btn btn-outline-theme w-100 mt-auto" onclick="openProductPopup(${p.productId})">
+                        <button class="btn btn-outline-theme w-100 mt-auto" onclick="openProductPopup(${prdId})">
                             <i class="fa-solid fa-cart-plus me-2"></i>Thêm vào giỏ
                         </button>
                     </div>
                 </div>
             </div>
-        `).join('');
+        `}).join('');
     }
 
     const inputs = [
@@ -85,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.querySelectorAll('.category-filter').forEach(radio => {
         radio.addEventListener('change', executeFilter);
-    });
+    });8
 
     function debounce(func, wait) {
         let timeout;

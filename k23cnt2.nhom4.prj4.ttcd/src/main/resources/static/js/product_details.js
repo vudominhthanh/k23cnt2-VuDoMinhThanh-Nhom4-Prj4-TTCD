@@ -1,62 +1,106 @@
-document.addEventListener("DOMContentLoaded", function() {
-    // 1. Khởi tạo hiệu ứng trượt AOS
-    AOS.init({
-        once: true,
-        offset: 30
-    });
+(function() {
+            const qtyInput = document.getElementById('quantity');
+            const basePriceInput = document.getElementById('basePrice');
+            const priceDisplay = document.getElementById('totalPriceDisplay');
+            const modifiers = document.querySelectorAll('.price-modifier');
+            const form = document.getElementById('addToCartForm');
+            const btnMinus = document.getElementById('btnMinus');
+            const btnPlus = document.getElementById('btnPlus');
 
-    // 2. Tính giá tiền lần đầu khi load trang
-    calculateTotal();
+            // Hàm tính tiền
+            const calculatePrice = () => {
+                if(!basePriceInput) return;
+                const basePrice = parseFloat(basePriceInput.value);
+                let extraPrice = 0;
 
-    // 3. Lắng nghe sự kiện thay đổi trên các ô Radio và Checkbox
-    const inputs = document.querySelectorAll('.calc-price');
-    inputs.forEach(input => {
-        input.addEventListener('change', calculateTotal);
-    });
-});
+                document.querySelectorAll('.price-modifier:checked').forEach(el => {
+                    extraPrice += parseFloat(el.getAttribute('data-price')) || 0;
+                });
 
-// Hàm tăng/giảm số lượng
-function updateQuantity(change) {
-    const qtyInput = document.getElementById('quantityInput');
-    let currentVal = parseInt(qtyInput.value);
-    let newVal = currentVal + change;
+                const quantity = parseInt(qtyInput.value) || 1;
+                const total = (basePrice + extraPrice) * quantity;
+                priceDisplay.innerHTML = `<span>${total.toLocaleString('vi-VN')}</span> VNĐ`;
+            };
 
-    // Giới hạn số lượng từ 1 đến 50
-    if(newVal >= 1 && newVal <= 50) {
-        qtyInput.value = newVal;
-        calculateTotal();
-    }
-}
+            // Sự kiện tăng giảm số lượng
+            if (btnMinus && btnPlus && qtyInput) {
+                btnMinus.addEventListener('click', () => {
+                    let qty = parseInt(qtyInput.value) || 1;
+                    if (qty > 1) { qtyInput.value = qty - 1; calculatePrice(); }
+                });
 
-// Hàm tính tổng tiền
-function calculateTotal() {
-    // Lấy giá gốc
-    let basePrice = parseFloat(document.getElementById('basePrice').value) || 0;
-    let extraPrice = 0;
-    let toppingPrice = 0;
+                btnPlus.addEventListener('click', () => {
+                    let qty = parseInt(qtyInput.value) || 1;
+                    qtyInput.value = qty + 1; calculatePrice();
+                });
 
-    // Lấy tiền Size đang được chọn
-    const selectedSize = document.querySelector('input[name="variantId"]:checked');
-    if (selectedSize) {
-        extraPrice = parseFloat(selectedSize.getAttribute('data-price')) || 0;
-    }
+                qtyInput.addEventListener('change', () => {
+                    if(qtyInput.value < 1) qtyInput.value = 1;
+                    calculatePrice();
+                });
+            }
 
-    // Lấy tổng tiền các Topping đang được tích
-    const selectedToppings = document.querySelectorAll('input[name="toppingIds"]:checked');
-    selectedToppings.forEach(topping => {
-        toppingPrice += parseFloat(topping.getAttribute('data-price')) || 0;
-    });
+            modifiers.forEach(mod => mod.addEventListener('change', calculatePrice));
 
-    // Lấy số lượng
-    let quantity = parseInt(document.getElementById('quantityInput').value) || 1;
+            calculatePrice();
 
-    // Công thức: (Giá gốc + Giá Size + Giá Topping) * Số lượng
-    let totalPrice = (basePrice + extraPrice + toppingPrice) * quantity;
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
 
-    // Format tiền tệ kiểu Việt Nam (VD: 45.000)
-    let formattedPrice = new Intl.NumberFormat('vi-VN').format(totalPrice);
+                    const productId = document.getElementById('productId').value;
+                    const quantity = qtyInput.value;
+                    const checkedVariant = document.querySelector('input[name="variantId"]:checked');
 
-    // Cập nhật giá trị hiển thị lên màn hình
-    document.getElementById('displayPrice').innerText = formattedPrice;
-    document.getElementById('btnPriceDisplay').innerText = formattedPrice + 'đ';
-}
+                    if (!checkedVariant) {
+                        alert('Vui lòng chọn Kích cỡ!');
+                        return;
+                    }
+
+                    const selectedOptions = Array.from(document.querySelectorAll('.option-item-val:checked'))
+                                                 .map(item => parseInt(item.value));
+
+                    const payload = {
+                        productId: parseInt(productId),
+                        variantId: parseInt(checkedVariant.value),
+                        quantity: parseInt(quantity),
+                        optionIds: selectedOptions
+                    };
+
+                    const btnSubmit = document.getElementById('btnSubmit');
+                    const originalText = btnSubmit.innerText;
+                    btnSubmit.innerText = "Đang xử lý...";
+                    btnSubmit.disabled = true;
+
+                    // Lấy token từ localStorage (Kế thừa từ code SPA của bạn)
+                    const token = localStorage.getItem("token");
+                    const headers = { 'Content-Type': 'application/json' };
+                    if (token) headers['Authorization'] = 'Bearer ' + token;
+
+                    fetch('/api/cart/add', {
+                        method: 'POST',
+                        headers: headers,
+                        body: JSON.stringify(payload)
+                    })
+                    .then(async response => {
+                        const text = await response.text();
+                        if (response.ok) {
+                            alert("✅ " + text);
+                        } else if (response.status === 401) {
+                            alert("Vui lòng đăng nhập để thêm vào giỏ hàng!");
+                            window.location.href = '/auth';
+                        } else {
+                            alert("❌ Lỗi: " + text);
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error:', err);
+                        alert('Lỗi kết nối máy chủ!');
+                    })
+                    .finally(() => {
+                        btnSubmit.innerText = originalText;
+                        btnSubmit.disabled = false;
+                    });
+                });
+            }
+        })();

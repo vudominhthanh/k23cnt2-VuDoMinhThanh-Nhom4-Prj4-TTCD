@@ -56,7 +56,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (!newDiv) throw new Error("Không có function-div");
 
+            document.querySelectorAll('.modal-backdrop')
+                .forEach(el => el.remove());
+
+            document.body.classList.remove('modal-open');
+            document.body.style = '';
+
             functionDiv.innerHTML = newDiv.innerHTML;
+            const scripts = functionDiv.querySelectorAll("script");
+
+            scripts.forEach(oldScript => {
+
+                const newScript = document.createElement("script");
+
+                if (oldScript.src) {
+                    newScript.src = oldScript.src;
+                } else {
+                    newScript.textContent = oldScript.textContent;
+                }
+
+                document.body.appendChild(newScript);
+
+                oldScript.remove();
+            });
 
             functionDiv.classList.remove('animate-fade-up');
             void functionDiv.offsetWidth;
@@ -66,7 +88,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             setActiveLink(targetUrl);
 
-            functionDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+//            functionDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+              window.scrollTo({ top: 0, behavior: 'smooth' });
 
         } catch (err) {
             console.error(err);
@@ -126,5 +150,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function handleLogout() {
      localStorage.removeItem("token");
+     localStorage.removeItem("role");
      window.location.href = "/";
 }

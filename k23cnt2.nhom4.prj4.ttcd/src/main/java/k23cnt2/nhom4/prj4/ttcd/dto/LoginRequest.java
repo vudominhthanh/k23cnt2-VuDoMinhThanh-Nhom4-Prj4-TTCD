@@ -1,5 +1,6 @@
 package k23cnt2.nhom4.prj4.ttcd.dto;
 
+import k23cnt2.nhom4.prj4.ttcd.entity.ENUMS;
 import lombok.Data;
 
 @Data
