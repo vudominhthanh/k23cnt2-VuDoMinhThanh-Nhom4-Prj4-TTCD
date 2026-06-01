@@ -42,7 +42,7 @@ public class PaymentController {
         }
 
         if (isSuccess) {
-            order.setOrderStatus(ENUMS.OrderStatus.CONFIRMED);
+            order.setOrderStatus(ENUMS.OrderStatus.PENDING);
 
         } else {
             order.setOrderStatus(ENUMS.OrderStatus.PENDING);

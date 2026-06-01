@@ -14,6 +14,8 @@ import java.util.Optional;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
 
+    Optional<Order> findById(Long id);
+
     List<Order> findTop5ByUserOrderByCreatedAtDesc(User user);
 
     List<Order> findByUserOrderByCreatedAtDesc(User user);
@@ -21,5 +23,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     Optional<Order> findByOrderCode(String orderCode);
 
     long countByUserAndOrderStatusIn(User user, List<ENUMS.OrderStatus> statuses);
+
+    List<Order> findByOrderStatusInOrderByCreatedAtDesc(List<ENUMS.OrderStatus> statuses);
 
 }

@@ -74,14 +74,13 @@ async function loadProductsToMenu() {
             return;
         }
 
-        // Tạo thẻ div cho từng sản phẩm uống dựa trên cấu trúc giao diện n4_product
         productListContainer.innerHTML = products.map(product => `
                     <div class="col">
                         <div class="product-item h-100 d-flex flex-column align-items-center justify-content-between p-3"
-                             onclick="openProductOptionsModal(${product.id})">
+                             onclick="openProductOptionsModal(${product.productId || product.id})">
                             <img src="/images/${product.imageUrl || 'default.jpg'}" class="img-fluid rounded mb-2" style="max-height: 80px; object-fit: cover;">
                             <div class="product-name fw-bold small text-dark text-center">${product.name}</div>
-                            <div class="product-price text-primary fw-bold mt-1">${product.basePrice.toLocaleString()}đ</div>
+                            <div class="product-price text-primary fw-bold mt-1">${product.startingPrice.toLocaleString()}đ</div>
                         </div>
                     </div>
                 `).join('');
@@ -108,24 +107,24 @@ async function openProductOptionsModal(productId) {
         document.getElementById('modalBasePrice').innerText = `Giá gốc: ${details.basePrice.toLocaleString()}đ`;
 
         // Render Sizes (Radio Buttons)
-        const sizeContainer = document.getElementById('modalSizes');
-        if (details.variants && details.variants.length > 0) {
-            sizeContainer.innerHTML = details.variants.map((v, index) => `
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="productSize" id="size_${v.id}" value="${v.id}" ${index === 0 ? 'checked' : ''}>
-                    <label class="form-check-label" for="size_${v.id}">
-                        ${v.sizeName} (+${v.extraPrice.toLocaleString()}đ)
-                    </label>
-                </div>
-            `).join('');
-        } else {
-            sizeContainer.innerHTML = '<span class="text-muted small">Size tiêu chuẩn</span>';
-        }
+       const sizeContainer = document.getElementById('modalSizes');
+       if (details.productVariants && details.productVariants.length > 0) {
+           sizeContainer.innerHTML = details.productVariants.map((v, index) => `
+               <div class="form-check">
+                   <input class="form-check-input" type="radio" name="productSize" id="size_${v.id}" value="${v.id}" ${index === 0 ? 'checked' : ''}>
+                   <label class="form-check-label" for="size_${v.id}">
+                       ${v.sizeName} (+${v.extraPrice.toLocaleString()}đ)
+                   </label>
+               </div>
+           `).join('');
+       } else {
+           sizeContainer.innerHTML = '<span class="text-muted small">Size tiêu chuẩn</span>';
+       }
 
         // Render Toppings/Options (Checkboxes)
         const optionContainer = document.getElementById('modalOptions');
-        if (details.options && details.options.length > 0) {
-            optionContainer.innerHTML = details.options.map(o => `
+        if (details.productOptions && details.productOptions.length > 0) {
+            optionContainer.innerHTML = details.productOptions .map(o => `
                 <div class="form-check mb-1">
                     <input class="form-check-input topping-checkbox" type="checkbox" id="option_${o.id}" value="${o.id}" data-price="${o.additionalPrice}" data-name="${o.optionName}">
                     <label class="form-check-label d-flex justify-content-between w-100" for="option_${o.id}">
@@ -137,10 +136,6 @@ async function openProductOptionsModal(productId) {
         } else {
             optionContainer.innerHTML = '<span class="text-muted small">Không có topping kèm theo</span>';
         }
-
-        // Reset Sugar/Ice về mặc định
-        document.getElementById('sugarLevel').value = "100";
-        document.getElementById('iceLevel').value = "100";
 
         // Mở Modal Bootstrap
         const modal = new bootstrap.Modal(document.getElementById('productOptionsModal'));
@@ -162,7 +157,11 @@ document.getElementById('btnConfirmAddToCart').addEventListener('click', () => {
         const checkedSize = Array.from(sizeRadios).find(r => r.checked);
         if (checkedSize) {
             selectedSizeId = parseInt(checkedSize.value);
-            const variant = currentProductInModal.variants.find(v => v.id === selectedSizeId);
+            const variant = currentProductInModal.productVariants.find(v => v.id === selectedSizeId);
+            if(variant) {
+                sizeName = variant.sizeName;
+                extraSizePrice = variant.extraPrice;
+            }
             sizeName = variant.sizeName;
             extraSizePrice = variant.extraPrice;
         }
@@ -177,16 +176,12 @@ document.getElementById('btnConfirmAddToCart').addEventListener('click', () => {
         extraOptionPrice += p;
     });
 
-    // 3. Lấy thông tin Đường / Đá
-    const sugar = document.getElementById('sugarLevel').value;
-    const ice = document.getElementById('iceLevel').value;
-
     // 4. Tính tổng tiền cho 1 ly này
     const finalItemPrice = currentProductInModal.basePrice + extraSizePrice + extraOptionPrice;
 
     // 5. Tạo Unique ID để gom nhóm trong giỏ hàng (Cùng món, cùng size, cùng topping, đá, đường thì cộng dồn số lượng)
     const optionIdsStr = selectedOptions.map(o => o.id).sort().join(',');
-    const cartItemId = `${currentProductInModal.id}_S${selectedSizeId}_O${optionIdsStr}_SU${sugar}_IC${ice}`;
+    const cartItemId = `${currentProductInModal.id}_S${selectedSizeId}_O${optionIdsStr}`;
 
     const existingItem = localCart.find(item => item.cartId === cartItemId);
 
@@ -196,12 +191,12 @@ document.getElementById('btnConfirmAddToCart').addEventListener('click', () => {
         localCart.push({
             cartId: cartItemId,
             productId: currentProductInModal.id,
+            variantId: selectedSizeId,
             name: currentProductInModal.name,
             price: finalItemPrice,
             quantity: 1,
             sizeName: sizeName,
-            sugar: sugar,
-            ice: ice,
+            optionIds: selectedOptions.map(o => parseInt(o.id)),
             options: selectedOptions.map(o => o.name).join(', ')
         });
     }
@@ -225,7 +220,7 @@ function renderLocalCart() {
         subTotal += itemTotal;
 
         // Cấu trúc mô tả ngắn gọn bên dưới tên món
-        let desc = `${item.sizeName} | Đ:${item.sugar}% | ĐK:${item.ice === 'hot' ? 'Nóng' : item.ice+'%'}`;
+        let desc = `${item.sizeName}`;
         if (item.options) desc += ` | ${item.options}`;
 
         return `
@@ -258,10 +253,11 @@ async function createOrderAtCounter() {
         paymentMethod: "CASH",
         items: localCart.map(item => ({
             productId: item.productId,
+            variantId: item.variantId,
             quantity: item.quantity,
             priceAtBuy: item.price,
             variantName: item.sizeName,
-            note: `Đường ${item.sugar}%, Đá ${item.ice}%. Topping: ${item.options || 'Không'}`
+            optionIds: item.optionIds
         }))
     };
 
@@ -306,42 +302,6 @@ function updateQuantity(index, change) {
         localCart.splice(index, 1);
     }
     renderLocalCart();
-}
-
-// --- 6. GỬI REQUEST API TẠO ĐƠN TẠI QUẦY XUỐNG DATABASE ---
-async function createOrderAtCounter() {
-    if (localCart.length === 0) {
-        alert("Vui lòng chọn ít nhất một món nước trước khi xuất hóa đơn!");
-        return;
-    }
-
-    // Đóng gói mảng giỏ hàng khớp định dạng bảng n4_order & n4_orderitem
-    const orderPayload = {
-        paymentMethod: "CASH",
-        items: localCart.map(item => ({
-            productId: item.id,
-            quantity: item.quantity,
-            priceAtBuy: item.price
-        }))
-    };
-
-    try {
-        const response = await fetch('/api/staff/orders/create-at-counter', {
-            method: 'POST',
-            headers: getAuthHeaders(),
-            body: JSON.stringify(orderPayload)
-        });
-
-        if (response.ok) {
-            alert("Tạo hóa đơn tại quầy thành công! Hệ thống tiến hành in Bill cứng.");
-            localCart = [];
-            renderLocalCart();
-        } else {
-            alert("Không thể lưu đơn hàng. Vui lòng kiểm tra lại quyền hạn!");
-        }
-    } catch (error) {
-        console.error("Lỗi API tạo hóa đơn tại quầy:", error);
-    }
 }
 
 // --- 7. BỘ LỌC TÌM KIẾM THỜI GIAN THỰC (REAL-TIME SEARCH FILTER) ---
@@ -503,6 +463,28 @@ function updateOrderUI(order) {
     updateCount();
 }
 
+// --- 12. TẢI CÁC ĐƠN HÀNG ĐANG XỬ LÝ (KHI F5/MỞ TRANG LẦN ĐẦU) ---
+async function loadActiveOrders() {
+    try {
+        const response = await fetch('/api/staff/orders', {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+
+        if (response.ok) {
+            const orders = await response.json();
+
+            document.getElementById('order-grid-inner').innerHTML = '';
+
+            orders.reverse().forEach(order => {
+                updateOrderUI(order);
+            });
+        }
+    } catch (error) {
+        console.error("Lỗi tải danh sách đơn hàng ban đầu:", error);
+    }
+}
+
 function getBadgeColor(status) {
     if(status === 'PENDING') return 'bg-warning text-dark';
     if(status === 'CONFIRMED') return 'bg-info text-dark';
@@ -514,7 +496,6 @@ function updateCount() {
     document.getElementById('order-count').innerText = document.querySelectorAll('.order-card').length;
 }
 
-// --- 11. KHỞI CHẠY KIỂM TRA QUYỀN HẠN KHI MỞ TRANG ---
 document.addEventListener('DOMContentLoaded', () => {
     const currentRole = localStorage.getItem('role');
 
@@ -524,9 +505,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // Kích hoạt chuỗi tính năng liên đới
     connect();
     switchToPOSMode();
-    loadProductsToMenu(); // Nạp sản phẩm thật từ MySQL ra khung POS trung tâm
-    initializeSearchFilters(); // Kích hoạt bộ lắng nghe ô tìm kiếm
+    loadProductsToMenu();
+    initializeSearchFilters();
+    loadActiveOrders();
 });
+

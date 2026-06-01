@@ -71,8 +71,8 @@ public class CartApiController {
                 map.put("cartItemId", item.getId());
                 map.put("quantity", item.getQuantity());
                 map.put("variantId", item.getVariant().getId());
-                map.put("variantName", item.getVariant().getSizeName()); // n4_sizeName
-                map.put("extraPrice", item.getVariant().getExtraPrice()); // n4_extraPrice
+                map.put("variantName", item.getVariant().getSizeName());
+                map.put("extraPrice", item.getVariant().getExtraPrice());
                 map.put("productName", item.getVariant().getProduct().getName());
                 map.put("basePrice", item.getVariant().getProduct().getBasePrice());
                 map.put("imageUrl", item.getVariant().getProduct().getImageUrl());

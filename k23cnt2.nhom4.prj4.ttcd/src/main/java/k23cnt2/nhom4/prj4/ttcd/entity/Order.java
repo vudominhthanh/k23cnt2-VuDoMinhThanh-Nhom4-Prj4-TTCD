@@ -46,5 +46,5 @@ public class Order {
     private String shippingAddress;
 
     @Column(insertable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

@@ -1,3 +1,48 @@
+let customerStompClient = null;
+
+function connectCustomerWS(token) {
+    const socket = new SockJS('/ws-order');
+    customerStompClient = Stomp.over(socket);
+    customerStompClient.debug = null;
+
+    customerStompClient.connect({'Authorization': 'Bearer ' + token}, function (frame) {
+
+        customerStompClient.subscribe('/topic/orders', function (message) {
+
+            const badge = document.getElementById('order-badge');
+            if(badge) badge.style.display = 'block';
+        });
+    }, function (error) {
+        console.log("Mất kết nối WebSocket, thử lại sau 5s...");
+        setTimeout(() => connectCustomerWS(token), 5000);
+    });
+}
+
+function hideOrderBadge() {
+    const badge = document.getElementById('order-badge');
+    if(badge) badge.style.display = 'none';
+}
+
+function updateNavbarStatus() {
+    const token = localStorage.getItem("token");
+    const navGuest = document.getElementById("nav-isnot");
+    const navUser = document.getElementById("nav-is");
+    const navOrders = document.getElementById("nav-orders");
+    const navCart = document.getElementById("nav-cart");
+
+    if (token !== null && token !== "") {
+        if (navGuest) navGuest.style.display = "none";
+        if (navUser) navUser.style.display = "block";
+        if (navOrders) navOrders.style.display = "block";
+        if (navCart) navCart.style.display = "block";
+    } else {
+        if (navGuest) navGuest.style.display = "block";
+        if (navUser) navUser.style.display = "none";
+        if (navOrders) navOrders.style.display = "none";
+        if (navCart) navCart.style.display = "none";
+    }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
 
     const functionDiv = document.getElementById('function-div');
@@ -88,9 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             setActiveLink(targetUrl);
 
-//            functionDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
 
         } catch (err) {
             console.error(err);
@@ -115,37 +158,49 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    const token = localStorage.getItem("token");
+//    const token = localStorage.getItem("token");
+//
+//    const navGuest = document.getElementById("nav-isnot");
+//    const navUser = document.getElementById("nav-is");
+//    const navOrders = document.getElementById("nav-orders");
+//    const navCart = document.getElementById("nav-cart");
+//
+//    if (token !== null && token !== "") {
+//        navGuest.style.display = "none";
+//        navUser.style.display = "block";
+//
+//        if (navOrders) navOrders.style.display = "block";
+//                connectCustomerWS(token);
+//
+//        if (navCart) navCart.style.display = "block";
+//
+//        try{
+//            const userNameSpan = document.querySelector("#nav-is span");
+//
+//            const base64Url = token.split('.')[1];
+//            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+//            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+//                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+//            }).join(''));
+//
+//            const decodedToken = JSON.parse(jsonPayload);
+//
+//            if (userNameSpan && decodedToken.sub) {
+//                userNameSpan.innerText = decodedToken.sub;
+//            }
+//        } catch (error) {
+//            console.error("Lỗi giải token !", error);
+//        }
+//
+//    } else {
+//        navGuest.style.display = "block";
+//        navUser.style.display = "none";
+//
+//        if (navOrders) navOrders.style.display = "none";
+//        if (navCart) navCart.style.display = "none";
+//    }
 
-    const navGuest = document.getElementById("nav-isnot");
-    const navUser = document.getElementById("nav-is");
-
-    if (token !== null && token !== "") {
-        navGuest.style.display = "none";
-        navUser.style.display = "block";
-
-        try{
-            const userNameSpan = document.querySelector("#nav-is span");
-
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-
-            const decodedToken = JSON.parse(jsonPayload);
-
-            if (userNameSpan && decodedToken.sub) {
-                userNameSpan.innerText = decodedToken.sub;
-            }
-        } catch (error) {
-            console.error("Lỗi giải token !", error);
-        }
-
-    } else {
-        navGuest.style.display = "block";
-        navUser.style.display = "none";
-    }
+      updateNavbarStatus();
 });
 
 function handleLogout() {
@@ -153,3 +208,4 @@ function handleLogout() {
      localStorage.removeItem("role");
      window.location.href = "/";
 }
+

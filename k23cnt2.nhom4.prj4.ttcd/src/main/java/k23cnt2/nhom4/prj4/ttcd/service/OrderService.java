@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,12 @@ public class OrderService {
 
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    ProductRepository productRepository;
+    @Autowired
+    ProductVariantRepository productVariantRepository;
+    @Autowired
+    ProductOptionRepository productOptionRepository;
     @Autowired
     CartRepository cartRepository;
     @Autowired
@@ -186,5 +193,124 @@ public class OrderService {
         return dto;
     }
 
+    @Transactional
+    public Order createPOSOrder(String staffEmail, Map<String, Object> payload) {
+        // 1. Tìm nhân viên đang trực máy (Lưu vào đơn để sau này tính KPI/Truy vết)
+        User staff = userRepository.findByEmail(staffEmail)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản nhân viên!"));
 
+        // 2. Khởi tạo Đơn hàng mới
+        Order order = new Order();
+        order.setUser(staff);
+        order.setShippingAddress("Khách mua tại quầy");
+        order.setOrderStatus(ENUMS.OrderStatus.PENDING);
+        order.setOrderCode("POS" + System.currentTimeMillis());
+        order.setCreatedAt(LocalDateTime.now());
+        order.setDiscountAmount(BigDecimal.ZERO);
+
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        List<OrderItem> orderItemsToSave = new ArrayList<>();
+        List<OrderItemOption> orderItemOptionsToSave = new ArrayList<>();
+
+        List<Map<String, Object>> items = (List<Map<String, Object>>) payload.get("items");
+
+        for (Map<String, Object> itemData : items) {
+            Integer productId = Integer.valueOf(itemData.get("productId").toString());
+            Integer variantId = Integer.valueOf(itemData.get("variantId").toString());
+            Integer quantity = Integer.valueOf(itemData.get("quantity").toString());
+            BigDecimal priceAtBuy = new BigDecimal(itemData.get("priceAtBuy").toString());
+
+            Product product = productRepository.findById(productId)
+                    .orElseThrow(() -> new RuntimeException("Lỗi: Sản phẩm không tồn tại"));
+            ProductVariant variant = productVariantRepository.findById(variantId)
+                    .orElseThrow(() -> new RuntimeException("Lỗi: Kích cỡ không tồn tại"));
+
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(order);
+            orderItem.setProductName(product.getName());
+            orderItem.setVariantName(variant.getSizeName());
+            orderItem.setQuantity(quantity);
+            orderItem.setPriceAtBuy(priceAtBuy);
+
+            List<String> optionNames = new ArrayList<>();
+            if (itemData.get("optionIds") != null) {
+                List<Integer> optionIds = (List<Integer>) itemData.get("optionIds");
+                for (Integer optId : optionIds) {
+                    ProductOption option = productOptionRepository.findById(optId)
+                            .orElseThrow(() -> new RuntimeException("Lỗi: Tùy chọn không tồn tại"));
+
+                    OrderItemOption orderItemOption = new OrderItemOption();
+                    OrderItemOptionId orderItemOptionId = new OrderItemOptionId();
+                    orderItemOptionId.setOptionName(option.getOptionName());
+                    orderItemOption.setId(orderItemOptionId);
+
+                    orderItemOption.setPriceAtBuy(option.getAdditionalPrice() != null ? option.getAdditionalPrice() : BigDecimal.ZERO);
+                    orderItemOption.setOrderItem(orderItem);
+
+                    orderItemOptionsToSave.add(orderItemOption);
+                    optionNames.add(option.getOptionName());
+                }
+            }
+
+            if (!optionNames.isEmpty()) {
+                orderItem.setNote("Tùy chọn: " + String.join(", ", optionNames));
+            }
+
+            BigDecimal lineTotal = priceAtBuy.multiply(new BigDecimal(quantity));
+            totalAmount = totalAmount.add(lineTotal);
+
+            orderItemsToSave.add(orderItem);
+        }
+
+        order.setTotalAmount(totalAmount);
+        order.setFinalAmount(totalAmount);
+
+        Order savedOrder = orderRepository.save(order);
+
+        for (OrderItem oi : orderItemsToSave) {
+            orderItemRepository.save(oi);
+        }
+        for (OrderItemOption oio : orderItemOptionsToSave) {
+            orderItemOptionRepository.save(oio);
+        }
+
+        Payment payment = new Payment();
+        payment.setOrder(savedOrder);
+        payment.setAmount(savedOrder.getFinalAmount());
+        payment.setCreatedAt(LocalDateTime.now());
+        payment.setPaymentMethod(ENUMS.PaymentMethod.CASH);
+        payment.setPaymentStatus(ENUMS.PaymentStatus.SUCCESS);
+        payment.setTransactionId("POS-CASH-" + savedOrder.getOrderCode());
+
+        paymentRepository.save(payment);
+
+        return savedOrder;
+    }
+
+    @Transactional(readOnly = true)
+    public OrderResponseDTO getOrderDetailById(Long id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng"));
+        return mapToResponseDTO(order); // Tái sử dụng hàm mapToResponseDTO đã có sẵn của bạn
+    }
+
+    @Transactional
+    public Order updateOrderStatusById(Long id, String newStatus) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng"));
+        order.setOrderStatus(ENUMS.OrderStatus.valueOf(newStatus.toUpperCase()));
+        return orderRepository.save(order);
+    }
+
+
+    public List<OrderResponseDTO> getActiveOrdersForStaff() {
+        List<Order> orders = orderRepository.findByOrderStatusInOrderByCreatedAtDesc(
+                java.util.Arrays.asList(
+                        ENUMS.OrderStatus.PENDING,
+                        ENUMS.OrderStatus.CONFIRMED,
+                        ENUMS.OrderStatus.DELIVERING
+                )
+        );
+        return orders.stream().map(this::mapToResponseDTO).collect(Collectors.toList());
+    }
 }

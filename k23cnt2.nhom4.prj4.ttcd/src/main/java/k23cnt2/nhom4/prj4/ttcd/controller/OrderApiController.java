@@ -9,6 +9,7 @@ import k23cnt2.nhom4.prj4.ttcd.repository.PaymentRepository;
 import k23cnt2.nhom4.prj4.ttcd.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +28,9 @@ public class OrderApiController {
     @Autowired
     PaymentRepository paymentRepository;
 
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
     @PostMapping("/checkout")
     public ResponseEntity<?> createOrder(@RequestBody CheckoutRequest request, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -34,6 +38,13 @@ public class OrderApiController {
         }
         try {
             Order order = orderService.checkout(authentication.getName(), request);
+
+            OrderResponseDTO notification = new OrderResponseDTO();
+            notification.setId(order.getId());
+            notification.setOrderCode(order.getOrderCode());
+            notification.setOrderStatus(order.getOrderStatus());
+            notification.setFinalAmount(order.getFinalAmount());
+            simpMessagingTemplate.convertAndSend("/topic/orders", notification);
 
             Map<String, Object> response = new HashMap<>();
             response.put("orderId", order.getId());

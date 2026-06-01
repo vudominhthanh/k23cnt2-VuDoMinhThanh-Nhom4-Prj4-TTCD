@@ -3,6 +3,7 @@
     let globalOrders = [];
     let currentViewingOrderCode = null;
     let orderDetailModalInstance = null;
+    let currentUserId = null;
 
     async function initOrdersView() {
         const user = await window.checkAuthAndGetProfile();
@@ -12,7 +13,14 @@
 
         const jwtToken = localStorage.getItem('token');
         await fetchAndRenderOrders(jwtToken);
-        connectWebSocket(user.id, jwtToken);
+
+        const base64Url = jwtToken.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        connectWebSocket(customerEmail, jwtToken);
 
         const modalEl = document.getElementById('orderDetailModal');
         if(modalEl) {
@@ -59,7 +67,6 @@
             let statusText = getStatusDisplayName(order.orderStatus);
             let badgeClass = getBadgeClassForStatus(order.orderStatus);
 
-            // Gom tên các món lại thành chuỗi ngắn gọn
             let itemsText = order.items && order.items.length > 0
                 ? order.items.map(i => `${i.quantity}x ${i.productName}`).join(', ')
                 : 'Đang tải thông tin món...';
@@ -123,7 +130,6 @@
         if(orderDetailModalInstance) orderDetailModalInstance.show();
     }
 
-    // --- HÀM HỦY ĐƠN (Đã được khôi phục) ---
     async function cancelCurrentOrder() {
         if (!currentViewingOrderCode) return;
 
@@ -150,50 +156,58 @@
         }
     }
 
-    // WEBSOCKET: Cập nhật UI Realtime
+
     function connectWebSocket(userId, token) {
-        const socket = new SockJS('/ws-order');
-        stompClient = Stomp.over(socket);
-        stompClient.debug = null;
-
-        stompClient.connect({ 'Authorization': 'Bearer ' + token }, function(frame) {
-            stompClient.subscribe('/topic/orders/' + userId, function(response) {
-                const updateData = JSON.parse(response.body);
-
-                fetchAndRenderOrders(token);
-            });
-        });
-    }
-
-    function getStatusDisplayName(statusEnum) {
-                switch(statusEnum) {
-                    case 'PENDING': return 'Chờ xác nhận';
-                    case 'CONFIRMED': return 'Đã xác nhận';
-                    case 'DELIVERING': return 'Đang giao hàng';
-                    case 'COMPLETED': return 'Hoàn thành';
-                    case 'CANCELLED': return 'Đã hủy';
-                    default: return statusEnum;
-                }
+            if (!userId) {
+                console.error("Không có User ID để kết nối WebSocket!");
+                return;
             }
 
-    function getBadgeClassForStatus(statusEnum) {
-        switch(statusEnum) {
-            case 'PENDING': return 'bg-warning';
-            case 'CONFIRMED': return 'bg-info';
-            case 'DELIVERING': return 'bg-primary';
-            case 'COMPLETED': return 'bg-success';
-            case 'CANCELLED': return 'bg-danger';
-            default: return 'bg-secondary';
+            const socket = new SockJS('/ws-order');
+            stompClient = Stomp.over(socket);
+            stompClient.debug = null; // Tắt bớt log rác
+
+            // Truyền token vào Header để lọt qua Security
+            stompClient.connect({ 'Authorization': 'Bearer ' + token }, function(frame) {
+                console.log("Customer WebSocket Connected! Lắng nghe kênh: /topic/orders/" + userId);
+
+                // CHỈ LẮNG NGHE KÊNH CÓ MÃ ID CỦA MÌNH
+                stompClient.subscribe('/topic/orders/' + userId, function(response) {
+                    console.log("Có tin nhắn mới từ Cửa hàng:", response.body);
+                    // Khi có sự thay đổi (nhân viên xác nhận), tự động gọi API lấy lại danh sách mới nhất
+                    fetchAndRenderOrders(token);
+                });
+            });
         }
-    }
 
-    function formatCurrency(amount) {
-        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount || 0);
-    }
+        function getStatusDisplayName(statusEnum) {
+                    switch(statusEnum) {
+                        case 'PENDING': return 'Chờ xác nhận';
+                        case 'CONFIRMED': return 'Đã xác nhận';
+                        case 'DELIVERING': return 'Đang giao hàng';
+                        case 'COMPLETED': return 'Hoàn thành';
+                        case 'CANCELLED': return 'Đã hủy';
+                        default: return statusEnum;
+                    }
+                }
 
-    window.openOrderDetailModal = openOrderDetailModal;
-    window.cancelCurrentOrder = cancelCurrentOrder;
+        function getBadgeClassForStatus(statusEnum) {
+            switch(statusEnum) {
+                case 'PENDING': return 'bg-warning';
+                case 'CONFIRMED': return 'bg-info';
+                case 'DELIVERING': return 'bg-primary';
+                case 'COMPLETED': return 'bg-success';
+                case 'CANCELLED': return 'bg-danger';
+                default: return 'bg-secondary';
+            }
+        }
 
-    initOrdersView();
-})();
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount || 0);
+        }
 
+        window.openOrderDetailModal = openOrderDetailModal;
+        window.cancelCurrentOrder = cancelCurrentOrder;
+
+        initOrdersView();
+    })();
