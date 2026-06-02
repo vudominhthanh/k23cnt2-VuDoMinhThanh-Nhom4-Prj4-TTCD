@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/User/_layout}"> <head>
+    <title th:text="${product.name} + ' - Chi tiết sản phẩm'">Chi tiết sản phẩm</title>
+
+</head>
+<body>
+<div layout:fragment="content" class="w-100">
+
+    <link rel="stylesheet" th:href="@{/css/product_details.css}">
+
+    <nav aria-label="breadcrumb" style="margin-bottom: 20px;">
+        <ol class="breadcrumb" style="background: transparent; padding: 0; margin: 0; font-size: 15px;">
+            <li class="breadcrumb-item">
+                <a th:href="@{/}" class="cus-link" style="color: var(--coffee-light); text-decoration: none; transition: color 0.3s;">
+                    <i class="fa-solid fa-house me-1"></i>Trang Chủ
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a th:href="@{/menu}" class="cus-link" style="color: var(--coffee-light); text-decoration: none; transition: color 0.3s;">
+                    Thực Đơn
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page"
+                style="color: var(--tea-green); font-weight: bold;"
+                th:text="${product.name}">
+                Tên sản phẩm
+            </li>
+        </ol>
+    </nav>
+
+    <div class="prod-container">
+        <div class="product-main">
+            <div class="product-image">
+                <img th:src="${product.imageUrl}" th:alt="${product.name}"
+                     onerror="this.onerror=null; this.src='/images/default-product.png'">
+            </div>
+
+            <div class="product-info">
+                <h1 th:text="${product.name}">Tên sản phẩm</h1>
+
+                <div class="product-rating-summary" th:if="${not #lists.isEmpty(product.reviews)}"
+                     th:with="totalReviews=${#lists.size(product.reviews)},
+                              sumRating=${#aggregates.sum(product.reviews.![rating])},
+                              avgRating=${sumRating * 1.0 / totalReviews},
+                              roundedAvg=${T(java.lang.Math).round(avgRating)}">
+
+                    <div class="summary-stars" th:text="${'★'.repeat(roundedAvg) + '☆'.repeat(5 - roundedAvg)}">
+                        ★★★★★
+                    </div>
+                    <div class="summary-text">
+                        <span th:text="${#numbers.formatDecimal(avgRating, 1, 1)} + '/5.0 | '">5.0/5.0 | </span>
+                        <a href="#reviews-section" th:text="${totalReviews} + ' Đánh giá'">10 Đánh giá</a>
+                    </div>
+                </div>
+
+                <div class="product-rating-summary" th:if="${#lists.isEmpty(product.reviews)}">
+                    <div class="summary-stars" style="color: #d7ccc8;">☆☆☆☆☆</div>
+                    <div class="summary-text">Chưa có đánh giá</div>
+                </div>
+
+                <input type="hidden" id="basePrice" th:value="${product.basePrice}">
+                <div class="price-display" id="totalPriceDisplay">
+                    <span th:text="${#numbers.formatDecimal(product.basePrice, 0, 'COMMA', 0, 'POINT')}"></span> VNĐ
+                </div>
+
+                <form id="addToCartForm">
+                    <input type="hidden" id="productId" th:value="${product.id}">
+
+                    <div class="option-group" th:if="${not #lists.isEmpty(variants)}">
+                        <h3>Kích cỡ (Bắt buộc)</h3>
+                        <div class="option-list">
+                            <div class="option-item" th:each="variant, iterStat : ${variants}">
+                                <input type="radio" name="variantId"
+                                       th:id="'size_' + ${variant.id}"
+                                       th:value="${variant.id}"
+                                       th:checked="${iterStat.first}"
+                                       th:data-price="${variant.extraPrice}"
+                                       class="price-modifier" required>
+                                <label th:for="'size_' + ${variant.id}">
+                                    <span th:text="${variant.sizeName}">Size M</span>
+                                    <span th:if="${variant.extraPrice > 0}" th:text="'(+' + ${#numbers.formatDecimal(variant.extraPrice, 0, 'COMMA', 0, 'POINT')} + 'đ)'"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="option-group" th:if="${not #lists.isEmpty(ices)}">
+                        <h3>Mức Đá</h3>
+                        <div class="option-list">
+                            <div class="option-item" th:each="ice, iterStat : ${ices}">
+                                <input type="radio" name="iceOption"
+                                       th:id="'ice_' + ${ice.id}"
+                                       th:value="${ice.id}"
+                                       th:data-price="${ice.additionalPrice}"
+                                       class="option-item-val">
+                                <label th:for="'ice_' + ${ice.id}" th:text="${ice.optionName}"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="option-group" th:if="${not #lists.isEmpty(sugars)}">
+                        <h3>Mức Đường</h3>
+                        <div class="option-list">
+                            <div class="option-item" th:each="sugar, iterStat : ${sugars}">
+                                <input type="radio" name="sugarOption"
+                                       th:id="'sugar_' + ${sugar.id}"
+                                       th:value="${sugar.id}"
+                                       th:data-price="${sugar.additionalPrice}"
+                                       class="option-item-val">
+                                <label th:for="'sugar_' + ${sugar.id}" th:text="${sugar.optionName}"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="option-group" th:if="${not #lists.isEmpty(toppings)}">
+                        <h3>Topping (Tùy chọn)</h3>
+                        <div class="option-list">
+                            <div class="option-item" th:each="topping : ${toppings}">
+                                <input type="checkbox" name="toppingOptions"
+                                       th:id="'topping_' + ${topping.id}"
+                                       th:value="${topping.id}"
+                                       th:data-price="${topping.additionalPrice}"
+                                       class="price-modifier option-item-val">
+                                <label th:for="'topping_' + ${topping.id}">
+                                    <span th:text="${topping.optionName}">Trân châu</span>
+                                    <span th:if="${topping.additionalPrice > 0}" th:text="'(+' + ${#numbers.formatDecimal(topping.additionalPrice, 0, 'COMMA', 0, 'POINT')} + 'đ)'"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-group">
+                        <div class="quantity-control">
+                            <button type="button" id="btnMinus">-</button>
+                            <input type="number" id="quantity" value="1" min="1">
+                            <button type="button" id="btnPlus">+</button>
+                        </div>
+                        <button type="submit" class="btn-add-cart" id="btnSubmit">Thêm vào giỏ hàng ngay</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div>
+            <h2 class="section-title">Mô tả sản phẩm</h2>
+            <div style="line-height: 1.8; color: var(--coffee-light);">
+                <p th:utext="${product.description ?: 'Chưa có mô tả cho sản phẩm này.'}"></p>
+            </div>
+        </div>
+
+        <!-- BẮT ĐẦU PHẦN ĐÁNH GIÁ -->
+        <div class="mt-4">
+            <h2 class="section-title">Đánh giá từ khách hàng</h2>
+            <div class="reviews-container">
+
+                <!-- Khối hiển thị khi có review -->
+                <div th:if="${not #lists.isEmpty(product.reviews)}" th:each="review : ${product.reviews}" class="review-card">
+                    <div class="review-header">
+                        <div class="review-user">
+                            <!-- Avatar lấy chữ cái đầu của tên -->
+                            <div class="user-avatar" th:text="${#strings.substring(review.user.fullName != null ? review.user.fullName : 'Guest', 0, 1)}">U</div>
+                            <span th:text="${review.user.fullName != null ? review.user.fullName : 'Khách hàng'}">Tên người dùng</span>
+                        </div>
+                        <!-- Render số lượng sao tự động từ int rating -->
+                        <div class="review-stars" th:text="${'★'.repeat(review.rating) + '☆'.repeat(5 - review.rating)}">
+                            ★★★★★
+                        </div>
+                    </div>
+                    <p class="review-content" th:text="${review.comment}">Nội dung đánh giá ở đây...</p>
+                </div>
+
+                <!-- Khối hiển thị khi chưa có review nào -->
+                <div th:if="${#lists.isEmpty(product.reviews)}" class="empty-review">
+                    ☕ Hiện tại chưa có đánh giá nào. Hãy là người đầu tiên thưởng thức và chia sẻ cảm nhận nhé!
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/product_details.js"></script>
+
+</div>
+</body>
+</html>

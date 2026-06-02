@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/User/_layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Về Chúng Tôi | Tea & Coffee</title>
+    <link rel="stylesheet" th:href="@{/css/about.css}">
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="about-header">
+        <h1>Về Chúng Tôi</h1>
+        <p>Chỉ trà và cà phê !</p>
+    </div>
+
+    <div class="about-container">
+        <section class="story">
+            <h2 class="section-title">Câu Chuyện Của Chúng Tôi</h2>
+            <div class="content-box">
+                <p>Mọi hành trình vĩ đại đều khởi đầu từ một ý tưởng nhỏ. Tại <strong>Tea & Coffee</strong>, chúng tôi không chỉ cung cấp sản phẩm, chúng tôi đang thực hiện sứ mệnh mang lại những trải nghiệm tuyệt vời nhất cho khách hàng.</p>
+            </div>
+        </section>
+
+        <section class="values">
+            <h2 class="section-title">Giá Trị Cốt Lõi</h2>
+            <div class="grid">
+                <div class="card card-quality">
+                    <h3>Chất Lượng</h3>
+                    <p>Mỗi sản phẩm đều trải qua quy trình kiểm duyệt khắt khe để đảm bảo sự hoàn hảo khi đến tay bạn.</p>
+                </div>
+                <div class="card card-dedication">
+                    <h3>Tận Tâm</h3>
+                    <p>Chúng tôi thấu hiểu những gì bạn thực sự cần để phục vụ tốt hơn mỗi ngày.</p>
+                </div>
+                <div class="card card-creativity">
+                    <h3>Sáng Tạo</h3>
+                    <p>Luôn cập nhật những xu hướng mới nhất để mang lại giá trị tối ưu và sự đổi mới không ngừng.</p>
+                </div>
+                <div class="card card-creativity">
+                    <h3>Quản trị</h3>
+                    <p>Luôn vận hành trong 1 quy trình chặt chẽ để dảm bảo xử lý nhanh gọn không ảnh hưởng đến trải nghiệm.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats info-footer">
+
+            <div class="stat-item company-info">
+                <h4 class="info-title">Tea & Coffee Inc.</h4>
+                <div class="info-content">
+                    <p><i class="fas fa-map-marker-alt"></i> Số xx - Đường xxxx xxxx xxxx - Phường xxx xxx - TP Hà Nội</p>
+                    <p><i class="fas fa-file-invoice"></i> MST: XXXXXXXX</p>
+                </div>
+            </div>
+
+            <div class="stat-item admin-contact">
+                <h4 class="info-title">Liên hệ quản trị</h4>
+                <div class="info-content contact-grid">
+                    <p>Vũ Đỗ Minh Thành - <span>0123.xxx.xxx</span></p>
+                    <p>Nhữ Anh Tuấn - <span>0123.xxx.xxx</span></p>
+                    <p>Phạm Đình Phùng - <span>0123.xxx.xxx</span></p>
+                    <p>Nguyễn Hữu Duy - <span>0123.xxx.xxx</span></p>
+                </div>
+            </div>
+
+            <div class="stat-item more-info">
+                <h4 class="info-title">More Information</h4>
+                <div class="info-content">
+                    <p>Thời gian làm việc: 08:00 - 22:00</p>
+                    <div class="social-icons">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết đơn hàng</title>
+
+    <!-- CSS Giao diện -->
+    <link rel="stylesheet"
+          th:href="@{/css/admin-dashboard.css}">
+
+    <!-- Thư viện Icon Font Awesome (Đã bổ sung để sửa lỗi mất icon) -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+<th:block th:with="activeMenu='orders'"> <!-- Gán menu active nếu cần thiết -->
+
+    <div class="dashboard-container">
+
+        <!-- SIDEBAR -->
+        <div th:replace="~{Admin/layout/sidebar :: sidebar}"></div>
+
+        <div class="main-wrapper">
+
+            <!-- NAVBAR -->
+            <div th:replace="~{Admin/layout/navbar :: navbar}"></div>
+
+            <!-- MAIN CONTENT -->
+            <main class="main-content">
+
+                <div class="content-header">
+                    <h1>Chi tiết đơn hàng</h1>
+                </div>
+
+                <div class="table-container">
+
+                    <h3>Thông tin đơn hàng</h3>
+
+                    <p>
+                        <b>Mã đơn:</b>
+                        <span th:text="${order.orderCode}"></span>
+                    </p>
+
+                    <p>
+                        <b>Khách hàng:</b>
+                        <span th:text="${order.user.fullName}"></span>
+                    </p>
+
+                    <p>
+                        <b>Địa chỉ:</b>
+                        <span th:text="${order.shippingAddress}"></span>
+                    </p>
+
+                    <p>
+                        <b>Tổng tiền:</b>
+                        <span th:text="${#numbers.formatDecimal(order.totalAmount,0,'COMMA',0,'POINT')} + ' đ'"></span>
+                    </p>
+
+                    <p>
+                        <b>Giảm giá:</b>
+                        <span th:text="${#numbers.formatDecimal(order.discountAmount,0,'COMMA',0,'POINT')} + ' đ'"></span>
+                    </p>
+
+                    <p>
+                        <b>Thanh toán:</b>
+                        <span th:text="${#numbers.formatDecimal(order.finalAmount,0,'COMMA',0,'POINT')} + ' đ'"></span>
+                    </p>
+
+                    <p>
+                        <b>Trạng thái:</b>
+                        <span class="badge badge-warning" th:text="${order.orderStatus}"></span>
+                    </p>
+
+                    <!-- Nút quay lại danh sách -->
+                    <div style="margin-top: 20px;">
+                        <a th:href="@{/admin/orders}" class="action-btn" style="text-decoration: none !important; display: inline-flex; align-items: center; gap: 5px;">
+                            <i class="fa-solid fa-arrow-left"></i> Quay lại
+                        </a>
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+</th:block>
+
+</body>
+</html>

@@ -39,9 +39,9 @@ public class SecurityConfig {
 
                         .requestMatchers("/api/auth/**", "/auth", "/api/products/**", "/", "/product-detail", "/menu", "/about","/customer/**", "/staff/dashboard").permitAll()
 
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-
                         .requestMatchers("/api/staff/orders/**").hasAnyRole("STAFF", "ADMIN")
+
+                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
 
                         .requestMatchers("/api/**", "/api/customer/**","/api/cart/**","/api/order/**","/api/payments/mock-callback").authenticated()
 

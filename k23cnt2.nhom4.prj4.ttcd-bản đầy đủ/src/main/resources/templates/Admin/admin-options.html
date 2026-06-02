@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Quản lý tùy chọn</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/admin-dashboard.css}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<th:block th:with="activeMenu='option'">
+
+    <div class="dashboard-container">
+
+        <div th:replace="~{Admin/layout/sidebar :: sidebar}"></div>
+
+        <div class="main-wrapper">
+
+            <div th:replace="~{Admin/layout/navbar :: navbar}"></div>
+
+            <main class="main-content">
+
+                <div class="content-header">
+
+                    <h1>Quản lý tùy chọn</h1>
+
+                </div>
+
+                <div class="top-actions">
+
+                </div>
+
+                <div class="table-container">
+
+                    <h3>Danh sách tùy chọn</h3>
+
+                    <table class="data-table">
+
+                        <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Tên tùy chọn</th>
+
+                            <th>Loại</th>
+
+                            <th>Giá thêm</th>
+
+                            <th>Hành động</th>
+
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="option : ${options}">
+
+                            <td th:text="${option.id}"></td>
+
+                            <td th:text="${option.optionName}"></td>
+
+                            <td th:text="${option.optionType}"></td>
+
+                            <td th:text="${option.additionalPrice}"></td>
+
+                            <td>
+
+                                <button class="edit-btn"
+
+                                        th:attr="
+                                            data-id=${option.id},
+                                            data-name=${option.optionName},
+                                            data-type=${option.optionType},
+                                            data-price=${option.additionalPrice}"
+
+                                        onclick="openEditModal(this)">
+
+                                    <i class="fa-solid fa-pen"></i>
+
+                                </button>
+
+                                <button class="delete-btn"
+
+                                        th:onclick="'deleteOption(' + ${option.id} + ')'">
+
+                                    <i class="fa-solid fa-trash"></i>
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+</th:block>
+
+
+<script th:src="@{/js/admin-option.js}"></script>
+
+</body>
+</html>

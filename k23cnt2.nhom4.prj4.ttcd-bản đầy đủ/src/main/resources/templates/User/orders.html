@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{User/_layout}">
+<head>
+    <title>User - Tea & Coffee</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="dashboard-layout">
+        <aside class="db-sidebar bg-dashboard-card py-4">
+            <div class="text-center mb-4 px-3">
+                <img src="https://ui-avatars.com/api/?name=User&background=689f38&color=fff" class="rounded-circle border border-2 border-white shadow-sm" style="width: 65px; height: 65px;">
+                <h6 class="fw-bold mt-3 mb-0 text-dark user-placeholder-name">Tài khoản</h6>
+            </div>
+            <nav class="db-menu">
+                <a th:href="@{/customer/dashboard}" class="sidebar-link cus-link"><i class="fa-solid fa-house-user"></i>Tổng quan</a>
+                <a th:href="@{/customer/cart}" class="sidebar-link cus-link"><i class="fa-solid fa-basket-shopping"></i>Giỏ hàng</a>
+                <a th:href="@{/customer/orders}" class="sidebar-link cus-link active"><i class="fa-solid fa-clock-rotate-left"></i>Đơn hàng</a>
+                <a th:href="@{/customer/settings}" class="sidebar-link cus-link"><i class="fa-solid fa-user-gear"></i>Cài đặt</a>
+                <a href="javascript:void(0)" class="sidebar-link opacity-50" style="cursor:not-allowed;"><i class="fa-solid fa-map-location-dot"></i>Địa chỉ <span class="badge-dev">Đang phát triển</span></a>
+                <a href="javascript:void(0)" class="sidebar-link opacity-50" style="cursor:not-allowed;"><i class="fa-solid fa-ticket"></i>Voucher <span class="badge-dev">Đang phát triển</span></a>
+            </nav>
+        </aside>
+
+        <main class="db-stage">
+            <div class="animate-fade-up">
+                <h4 class="fw-bold mb-4" style="color: var(--coffee-dark);">Lịch sử mua hàng</h4>
+
+                <div id="orders-container" class="bg-dashboard-card p-4 d-flex flex-column gap-3">
+                    <div class="text-center text-muted py-3">
+                        <i class="fa-solid fa-spinner fa-spin me-2"></i> Đang tải dữ liệu đơn hàng...
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="orderDetailModalLabel">Chi tiết đơn hàng <span id="modalOrderCode" class="text-primary"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="modalOrderItems" class="d-flex flex-column gap-3 mb-3">
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-medium">Tổng tiền:</span>
+                        <h5 class="fw-bold text-danger mb-0" id="modalFinalAmount">0 đ</h5>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger d-none" id="btnCancelOrder" onclick="cancelCurrentOrder()">Hủy đơn hàng</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script th:src="@{/js/apiClient.js}"></script>
+    <script th:src="@{/js/orders.js}"></script>
+</div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+
+.dashboard-layout {
+    display: flex;
+    gap: 24px;
+    align-items: start;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.db-sidebar {
+    width: 260px;
+    flex-shrink: 0;
+}
+
+.db-stage {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+/* Card Style */
+.bg-dashboard-card {
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(62, 39, 35, 0.04);
+}
+
+/* Sidebar Menu Navigation Links */
+.db-menu .sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: 12px 18px;
+    color: var(--coffee-light);
+    text-decoration: none;
+    border-radius: 12px;
+    margin: 5px 15px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.db-menu .sidebar-link i {
+    width: 25px;
+    font-size: 1.05rem;
+}
+
+.db-menu .sidebar-link:hover {
+    background: rgba(104, 159, 56, 0.08);
+    color: var(--tea-green);
+}
+
+.db-menu .sidebar-link.active {
+    background: var(--tea-green);
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(104, 159, 56, 0.25);
+}
+
+/* Status Badges */
+.badge-dev {
+    font-size: 0.65rem;
+    background: #eaeaea;
+    color: #777;
+    padding: 2px 6px;
+    border-radius: 8px;
+    margin-left: auto;
+    font-weight: normal;
+}
+
+/* Stats Widget Info Boxes */
+.widget-stat {
+    padding: 18px;
+    border-radius: 16px;
+    background: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.015);
+}

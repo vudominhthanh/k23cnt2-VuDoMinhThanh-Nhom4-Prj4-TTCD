@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Quản Lý Đơn Hàng</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/admin-dashboard.css}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<th:block th:with="activeMenu='orders'">
+
+    <div class="dashboard-container">
+
+        <div th:replace="~{Admin/layout/sidebar :: sidebar}"></div>
+
+        <div class="main-wrapper">
+
+            <div th:replace="~{Admin/layout/navbar :: navbar}"></div>
+
+            <main class="main-content">
+
+                <div class="content-header">
+                    <h1>Quản lý đơn hàng</h1>
+                </div>
+
+                <div class="table-container">
+
+                    <h3>Danh sách đơn hàng</h3>
+
+                    <table class="data-table">
+
+                        <thead>
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Mã đơn</th>
+                            <th>Khách hàng</th>
+                            <th>Tổng tiền</th>
+                            <th>Giảm giá</th>
+                            <th>Thanh toán</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="order : ${orders}">
+
+                            <td th:text="${order.id}"></td>
+
+                            <td th:text="${order.orderCode}"></td>
+
+                            <td th:text="${order.user.fullName}"></td>
+
+                            <td th:text="${#numbers.formatDecimal(order.totalAmount,0,'COMMA',0,'POINT')} + ' đ'"></td>
+
+                            <td th:text="${#numbers.formatDecimal(order.discountAmount,0,'COMMA',0,'POINT')} + ' đ'"></td>
+
+                            <td th:text="${#numbers.formatDecimal(order.finalAmount,0,'COMMA',0,'POINT')} + ' đ'"></td>
+
+                            <td>
+
+                                <span class="badge"
+
+                                      th:classappend="
+                                        ${order.orderStatus.name() == 'PENDING'} ? 'badge-warning' :
+                                        (${order.orderStatus.name() == 'CONFIRMED'} ? 'badge-info' :
+                                        (${order.orderStatus.name() == 'SHIPPING'} ? 'badge-primary' :
+                                        (${order.orderStatus.name() == 'COMPLETED'} ? 'badge-success' :
+                                        'badge-danger')))"
+
+                                      th:text="${order.orderStatus}">
+
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                <!-- Xem chi tiết -->
+                                <a class="action-btn"
+                                   th:href="@{/admin/orders/{id}(id=${order.id})}"
+                                   style="text-decoration: none !important; display: inline-flex; align-items: center; justify-content: center;">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+
+                                <!-- Đổi trạng thái -->
+                                <select class="status-select"
+                                        th:onchange="'updateOrderStatus(' + ${order.id} + ', this.value)'">
+
+                                    <option th:each="status : ${statuses}"
+                                            th:value="${status}"
+                                            th:text="${status}"
+                                            th:selected="${status == order.orderStatus}">
+                                    </option>
+
+                                </select>
+
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+</th:block>
+
+<script th:src="@{/js/admin-orders.js}"></script>
+
+</body>
+
+</html>

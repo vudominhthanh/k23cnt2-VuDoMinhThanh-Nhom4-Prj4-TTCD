@@ -35,6 +35,23 @@ function updateNavbarStatus() {
         if (navUser) navUser.style.display = "block";
         if (navOrders) navOrders.style.display = "block";
         if (navCart) navCart.style.display = "block";
+        try{
+           const userNameSpan = document.querySelector("#nav-is span");
+
+           const base64Url = token.split('.')[1];
+           const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+           const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+               return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+           }).join(''));
+
+           const decodedToken = JSON.parse(jsonPayload);
+
+           if (userNameSpan && decodedToken.sub) {
+                userNameSpan.innerText = decodedToken.sub;
+           }
+        } catch (error) {
+           console.error("Lỗi giải token !", error);
+        }
     } else {
         if (navGuest) navGuest.style.display = "block";
         if (navUser) navUser.style.display = "none";

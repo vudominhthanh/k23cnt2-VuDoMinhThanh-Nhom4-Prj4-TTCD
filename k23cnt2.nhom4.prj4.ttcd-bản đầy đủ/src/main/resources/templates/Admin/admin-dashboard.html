@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/admin-dashboard.css}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<th:block th:with="activeMenu='dashboard'">
+
+    <div class="dashboard-container">
+
+        <!-- SIDEBAR -->
+        <div th:replace="~{Admin/layout/sidebar :: sidebar}"></div>
+
+        <!-- MAIN -->
+        <div class="main-wrapper">
+
+            <!-- NAVBAR -->
+            <div th:replace="~{Admin/layout/navbar :: navbar}"></div>
+
+            <!-- CONTENT -->
+            <main class="main-content">
+
+                <!-- HEADER -->
+                <div class="content-header">
+
+                    <h1>Tổng quan hệ thống</h1>
+
+                </div>
+
+                <!-- STATS -->
+                <div class="stats-grid">
+
+                    <!-- Tổng đơn hàng -->
+                    <div class="stat-card">
+
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                        </div>
+
+                        <div class="stat-info">
+
+                            <h3>Tổng đơn hàng</h3>
+
+                            <p th:text="${stats.totalOrders}">
+                                0
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Doanh thu -->
+                    <div class="stat-card">
+
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-wallet"></i>
+                        </div>
+
+                        <div class="stat-info">
+
+                            <h3>Doanh thu</h3>
+
+                            <p th:text="${#numbers.formatDecimal(stats.totalRevenue,0,'COMMA',0,'POINT')} + ' đ'">
+                                0 đ
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Tổng khách hàng -->
+                    <div class="stat-card">
+
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+
+                        <div class="stat-info">
+
+                            <h3>Tổng khách hàng</h3>
+
+                            <p th:text="${stats.totalCustomers}">
+                                0
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Tổng sản phẩm -->
+                    <div class="stat-card">
+
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-box"></i>
+                        </div>
+
+                        <div class="stat-info">
+
+                            <h3>Tổng sản phẩm</h3>
+
+                            <p th:text="${stats.totalProducts}">
+                                0
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+                <div class="table-container" style="margin-bottom: 30px;">
+                    <h3>Xu hướng doanh thu cửa hàng</h3>
+                    <div style="width: 100%; max-height: 350px; position: relative;">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <script th:inline="javascript">
+                    const labelsFromServer = [[${chartLabels}]];
+                    const dataFromServer = [[${chartData}]];
+
+                    const ctx = document.getElementById('revenueChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labelsFromServer,
+                            datasets: [{
+                                label: 'Doanh thu cửa hàng (đ)',
+                                data: dataFromServer,
+                                backgroundColor: 'rgba(197, 216, 164, 0.3)',
+                                borderColor: '#4a3b32',
+                                borderWidth: 3,
+                                tension: 0.3,
+                                fill: true,
+                                pointBackgroundColor: '#4a3b32',
+                                pointRadius: 5
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return value.toLocaleString() + ' đ';
+                                        }
+                                    }
+                                }
+                            },
+                            plugins: {
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return 'Doanh thu: ' + context.raw.toLocaleString() + ' đ';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                </script>
+                <!-- ĐƠN HÀNG CHỜ XỬ LÝ -->
+                <div class="table-container">
+
+                    <h3>Đơn hàng chờ xử lý</h3>
+
+                    <table class="data-table">
+
+                        <thead>
+
+                        <tr>
+
+                            <th>Mã đơn</th>
+
+                            <th>Khách hàng</th>
+
+                            <th>Tổng tiền</th>
+
+                            <th>Địa chỉ</th>
+
+                            <th>Trạng thái</th>
+
+                            <th>Hành động</th>
+
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="order : ${recentOrders}">
+
+                            <td th:text="${order.orderCode}"></td>
+
+                            <td th:text="${order.user.fullName}"></td>
+
+                            <td th:text="${#numbers.formatDecimal(order.finalAmount,0,'COMMA',0,'POINT')} + ' đ'"></td>
+
+                            <td th:text="${order.shippingAddress}"></td>
+
+                            <td>
+
+        <span class="badge badge-warning"
+              th:text="${order.orderStatus}">
+        </span>
+
+                            </td>
+
+                            <td>
+
+                                <a class="action-btn"
+                                   th:href="@{/admin/orders/{id}(id=${order.id})}"
+                                   style="text-decoration: none !important; display: inline-flex; align-items: center; justify-content: center;">
+
+                                    <i class="fa-solid fa-eye"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <!-- QUICK ACTION -->
+                <div class="table-container"
+                     style="margin-top: 30px;">
+
+                    <h3>Thao tác nhanh</h3>
+
+                    <div class="quick-actions">
+
+                        <a th:href="@{/admin/products}"
+                           class="quick-btn">
+
+                            <i class="fa-solid fa-box"></i>
+                            Quản lý sản phẩm
+
+                        </a>
+
+                        <a th:href="@{/admin/users}"
+                           class="quick-btn">
+
+                            <i class="fa-solid fa-users"></i>
+                            Quản lý người dùng
+
+                        </a>
+
+                        <a th:href="@{/admin/orders}"
+                           class="quick-btn">
+
+                            <i class="fa-solid fa-receipt"></i>
+                            Quản lý đơn hàng
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+</th:block>
+
+
+</body>
+
+</html>

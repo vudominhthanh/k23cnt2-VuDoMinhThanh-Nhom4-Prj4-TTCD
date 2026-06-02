@@ -20,7 +20,7 @@
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         }).join(''));
 
-        connectWebSocket(customerEmail, jwtToken);
+        connectWebSocket(user.getE, jwtToken);
 
         const modalEl = document.getElementById('orderDetailModal');
         if(modalEl) {
@@ -157,8 +157,8 @@
     }
 
 
-    function connectWebSocket(userId, token) {
-            if (!userId) {
+    function connectWebSocket(customerEmail, token) {
+            if (!customerEmail) {
                 console.error("Không có User ID để kết nối WebSocket!");
                 return;
             }

@@ -43,10 +43,6 @@ function renderProducts(products) {
                         <span class="badge-new">Mới</span>
 
                         <img src="${product.imageUrl}" class="card-img-top" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 15px 15px 0 0;">
-
-                        <div class="btn-add-cart" onclick="event.preventDefault(); event.stopPropagation(); console.log('Thêm vào giỏ: ' + ${product.productId})">
-                            <i class="fa-solid fa-thumbs-up"></i>
-                        </div>
                     </div>
 
                     <div class="card-body d-flex flex-column mt-2 text-center" style="color: inherit;">
@@ -67,5 +63,5 @@ function renderProducts(products) {
 }
 
 function goToDetail(productId) {
-    window.location.href = `/product-detail?id=${productId}`;
+    window.location.assign("/product-detail?id=" + productId + "&t=" + new Date().getTime());
 }

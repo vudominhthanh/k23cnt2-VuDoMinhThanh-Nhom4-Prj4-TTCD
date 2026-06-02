@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta th:name="_csrf" th:content="${_csrf?.token}"/>
+    <meta th:name="_csrf_header" th:content="${_csrf?.headerName}"/>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Sản Phẩm</title>
+    <link rel="stylesheet" th:href="@{/css/admin-dashboard.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<th:block th:with="activeMenu='products'">
+
+    <div class="dashboard-container">
+
+        <!-- SIDEBAR -->
+        <div th:replace="~{Admin/layout/sidebar :: sidebar}"></div>
+
+        <!-- MAIN -->
+        <div class="main-wrapper">
+
+            <!-- NAVBAR -->
+            <div th:replace="~{Admin/layout/navbar :: navbar}"></div>
+
+            <!-- CONTENT -->
+            <main class="main-content">
+
+                <!-- HEADER -->
+                <div class="content-header">
+
+                    <h1>Quản lý sản phẩm</h1>
+
+                </div>
+
+                <!-- ACTION -->
+                <div class="top-actions">
+
+                    <button class="add-btn"
+                            onclick="openAddModal()">
+
+                        <i class="fa-solid fa-plus"></i>
+                        Thêm sản phẩm
+
+                    </button>
+
+                </div>
+
+                <!-- TABLE -->
+                <div class="table-container">
+
+                    <h3>Danh sách sản phẩm</h3>
+
+                    <table class="data-table">
+
+                        <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Ảnh</th>
+
+                            <th>Tên</th>
+
+                            <th>Danh mục</th>
+
+                            <th>Giá</th>
+
+                            <th>Slug</th>
+
+                            <th>Trạng thái</th>
+
+                            <th>Hành động</th>
+
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="product : ${products}">
+
+                            <!-- ID -->
+                            <td th:text="${product.id}"></td>
+
+                            <!-- IMAGE -->
+                            <td>
+
+                                <img th:src="${product.imageUrl}"
+                                     class="product-image">
+
+                            </td>
+
+                            <!-- NAME -->
+                            <td th:text="${product.name}"></td>
+
+                            <!-- CATEGORY -->
+                            <td th:text="${product.category.name}"></td>
+
+                            <!-- PRICE -->
+                            <td th:text="${product.basePrice}"></td>
+
+                            <!-- SLUG -->
+                            <td th:text="${product.slug}"></td>
+
+                            <!-- STATUS -->
+                            <td>
+
+                                <span class="badge"
+                                      th:classappend="${product.isActive} ? 'badge-success' : 'badge-warning'"
+                                      th:text="${product.isActive} ? 'Đang bán' : 'Dừng bán'">
+
+                                </span>
+
+                            </td>
+
+                            <!-- ACTION -->
+                            <td>
+
+                                <!-- EDIT -->
+                                <button class="action-btn"
+
+                                        th:attr="
+                                            data-id=${product.id},
+                                            data-name=${product.name},
+                                            data-slug=${product.slug},
+                                            data-price=${product.basePrice},
+                                            data-description=${product.description},
+                                            data-category=${product.category.id}"
+
+                                        onclick="openEditModal(this)">
+
+                                    <i class="fa-solid fa-pen"></i>
+
+                                </button>
+
+                                <button type="button"
+                                        style="width: 36px; height: 36px; inline-size: 36px; text-align: center; padding: 0;"
+                                        th:classappend="${product.isActive} ? 'delete-btn' : 'add-btn'"
+                                        th:onclick="|toggleStatus(${product.id}, ${product.isActive})|">
+                                    <i class="fa-solid" th:classappend="${product.isActive} ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                </button>
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+</th:block>
+
+<!-- MODAL -->
+<div class="modal"
+     id="productModal">
+
+    <div class="modal-content">
+
+        <!-- HEADER -->
+        <div class="modal-header">
+
+            <h2 id="modalTitle">
+
+                Thêm sản phẩm
+
+            </h2>
+
+            <span class="close-btn"
+                  onclick="closeModal()">
+
+                &times;
+
+            </span>
+
+        </div>
+
+        <!-- BODY -->
+        <div class="modal-body">
+
+            <input type="hidden"
+                   id="productId">
+
+            <!-- NAME -->
+            <div class="form-group">
+
+                <label>Tên sản phẩm</label>
+
+                <input type="text"
+                       id="name"
+                       placeholder="Nhập tên sản phẩm">
+
+            </div>
+
+            <!-- CATEGORY -->
+            <div class="form-group">
+
+                <label>Danh mục</label>
+
+                <select id="categoryId">
+
+                    <option value="">
+                        -- Chọn danh mục --
+                    </option>
+
+                    <option th:each="category : ${categories}"
+                            th:value="${category.id}"
+                            th:text="${category.name}">
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- SLUG -->
+            <div class="form-group">
+
+                <label>Slug</label>
+
+                <input type="text"
+                       id="slug"
+                       placeholder="tra-sua-matcha">
+
+            </div>
+
+            <!-- IMAGE -->
+            <div class="form-group">
+
+                <label>Ảnh sản phẩm</label>
+
+                <input type="file"
+                       id="imageFile">
+
+            </div>
+
+            <!-- PRICE -->
+            <div class="form-group">
+
+                <label>Giá</label>
+
+                <input type="number"
+                       id="price"
+                       placeholder="45000">
+
+            </div>
+            <div class="form-group">
+
+                <label>Kích cỡ áp dụng</label>
+
+                <div class="checkbox-group">
+
+                    <label th:each="variant : ${variants}">
+
+                        <input type="checkbox"
+                               name="variantIds"
+                               th:value="${variant.id}">
+
+                        <span th:text="${variant.sizeName + ' (+' + variant.extraPrice + 'đ)'}">
+            </span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Mô tả</label>
+
+                <textarea id="description"
+                          rows="4"
+                          placeholder="Mô tả sản phẩm"></textarea>
+
+            </div>
+
+            <!-- SAVE -->
+            <button class="save-btn"
+                    onclick="saveProduct()">
+
+                <i class="fa-solid fa-floppy-disk"></i>
+                Lưu sản phẩm
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script th:src="@{/js/admin-products.js}"></script>
+
+</body>
+
+</html>

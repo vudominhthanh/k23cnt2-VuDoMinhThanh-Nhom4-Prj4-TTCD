@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{User/_layout}">
+<body>
+<div layout:fragment="content">
+    <div class="dashboard-layout">
+        <aside class="db-sidebar bg-dashboard-card py-4">
+            <div class="text-center mb-4 px-3">
+                <img src="https://ui-avatars.com/api/?name=User&background=689f38&color=fff" class="rounded-circle border border-2 border-white shadow-sm" style="width: 65px; height: 65px;">
+                <h6 class="fw-bold mt-3 mb-0 text-dark user-placeholder-name">Tài khoản</h6>
+            </div>
+            <nav class="db-menu">
+                <a th:href="@{/customer/dashboard}" class="sidebar-link cus-link"><i class="fa-solid fa-house-user"></i>Tổng quan</a>
+                <a th:href="@{/customer/cart}" class="sidebar-link cus-link"><i class="fa-solid fa-basket-shopping"></i>Giỏ hàng</a>
+                <a th:href="@{/customer/orders         }" class="sidebar-link cus-link"><i class="fa-solid fa-clock-rotate-left"></i>Đơn hàng</a>
+                <a th:href="@{/customer/settings}" class="sidebar-link cus-link active"><i class="fa-solid fa-user-gear"></i>Cài đặt</a>
+                <a href="javascript:void(0)" class="sidebar-link opacity-50" style="cursor:not-allowed;"><i class="fa-solid fa-map-location-dot"></i>Địa chỉ <span class="badge-dev">Đang phát triển</span></a>
+                <a href="javascript:void(0)" class="sidebar-link opacity-50" style="cursor:not-allowed;"><i class="fa-solid fa-ticket"></i>Voucher <span class="badge-dev">Đang phát triển</span></a>
+            </nav>
+        </aside>
+
+        <main class="db-stage">
+            <div class="animate-fade-up">
+                <h4 class="fw-bold mb-4" style="color: var(--coffee-dark);">Cài đặt tài khoản</h4>
+
+                <div class="bg-dashboard-card p-4 mb-4">
+                    <h6 class="fw-bold mb-3 text-dark"><i class="fa-regular fa-id-card me-2 text-success"></i>Thông tin cá nhân</h6>
+                    <form id="form-update-profile">
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <label class="form-label small text-muted mb-1">Email đăng nhập</label>
+                                <input type="text" id="inp-username" class="form-control form-control-sm rounded-3 bg-light" readonly disabled>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label small text-muted mb-1">Họ và tên</label>
+                                <input type="text" id="inp-fullname" class="form-control form-control-sm rounded-3" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small text-muted mb-1">Số điện thoại</label>
+                                <input type="text" id="inp-phone" class="form-control form-control-sm rounded-3" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn text-white fw-bold btn-sm px-4 mt-3" style="background-color:var(--tea-green); border-radius:15px;">Lưu thông tin</button>
+                    </form>
+                </div>
+
+                <div class="bg-dashboard-card p-4">
+                    <h6 class="fw-bold mb-3 text-dark"><i class="fa-solid fa-key me-2 text-success"></i>Đổi mật khẩu bảo mật</h6>
+                    <form id="form-update-password">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small text-muted mb-1">Mật khẩu cũ</label>
+                                <input type="password" id="inp-old-pass" class="form-control form-control-sm rounded-3" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small text-muted mb-1">Mật khẩu mới</label>
+                                <input type="password" id="inp-new-pass" class="form-control form-control-sm rounded-3" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn text-white fw-bold btn-sm px-4 mt-3" style="background-color:var(--coffee-dark); border-radius:15px;">Cập nhật mật khẩu</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script th:src="@{/js/apiClient.js}"></script>
+    <script>
+        async function initSettingsView() {
+            const user = await window.checkAuthAndGetProfile();
+            if(!user) return;
+
+            document.querySelectorAll('.user-placeholder-name').forEach(el => el.innerText = user.fullName || user.username);
+            document.getElementById('inp-username').value = user.username;
+            document.getElementById('inp-fullname').value = user.fullName || '';
+            document.getElementById('inp-phone').value = user.phone || '';
+
+            // Đăng ký sự kiện submit form cập nhật thông tin cá nhân
+            document.getElementById('form-update-profile').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const dto = {
+                    fullName: document.getElementById('inp-fullname').value,
+                    phone: document.getElementById('inp-phone').value
+                };
+                const res = await window.fetchWithToken('/api/customer/profile/update', {
+                    method: 'PUT',
+                    body: JSON.stringify(dto)
+                });
+                if (res && res.ok) alert("🎉 Cập nhật thông tin hồ sơ thành công!");
+                else alert("Có lỗi xảy ra khi cập nhật!");
+            });
+
+            // Đăng ký sự kiện submit form đổi mật khẩu
+            document.getElementById('form-update-password').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const dto = {
+                    oldPassword: document.getElementById('inp-old-pass').value,
+                    newPassword: document.getElementById('inp-new-pass').value
+                };
+                const res = await window.fetchWithToken('/api/customer/profile/password', {
+                    method: 'PUT',
+                    body: JSON.stringify(dto)
+                });
+                if (res && res.ok) {
+                    alert("🎉 Đổi mật khẩu thành công!");
+                    document.getElementById('form-update-password').reset();
+                } else {
+                    const txt = await res.text();
+                    alert(txt);
+                }
+            });
+        }
+        initSettingsView();
+    </script>
+</div>
+</body>
+</html>

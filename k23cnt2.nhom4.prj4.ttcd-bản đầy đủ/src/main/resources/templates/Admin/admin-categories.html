@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý danh mục</title>
+    <link rel="stylesheet" th:href="@{/css/admin-dashboard.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+<th:block th:with="activeMenu='category'">
+    <div class="dashboard-container">
+        <div th:replace="~{Admin/layout/sidebar :: sidebar}"></div>
+        <div class="main-wrapper">
+            <div th:replace="~{Admin/layout/navbar :: navbar}"></div>
+
+            <main class="main-content">
+                <div class="content-header">
+                    <h1>Quản lý danh mục</h1>
+                </div>
+
+                <div class="top-actions">
+                    <button class="add-btn" onclick="openAddModal()">
+                        <i class="fa-solid fa-plus"></i> Thêm danh mục
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <h3>Danh sách danh mục</h3>
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ảnh</th>
+                            <th>Tên</th>
+                            <th>Slug</th>
+                            <th>Hành động</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="category : ${categories}">
+                            <td th:text="${category.id}"></td>
+                            <td>
+                                <img th:src="${category.imageUrl}" class="product-image">
+                            </td>
+                            <td th:text="${category.name}"></td>
+                            <td th:text="${category.slug}"></td>
+                            <td>
+                                <button class="edit-btn"
+                                        th:attr="data-id=${category.id},
+                     data-name=${category.name},
+                     data-slug=${category.slug},
+                     data-image=${category.imageUrl}"
+                                        onclick="openEditModal(this)">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+
+                                <button class="delete-btn"
+                                        th:onclick="|deleteCategory(${category.id})|"
+                                        title="Xóa danh mục"
+                                        style="background-color: #e74c3c; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; margin-left: 5px;">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+</th:block>
+
+<div class="modal" id="categoryModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Thêm danh mục</h2>
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+        </div>
+
+        <div class="modal-body">
+            <input type="hidden" id="categoryId">
+
+            <div class="form-group">
+                <label>Tên danh mục</label>
+                <input type="text" id="name">
+            </div>
+
+            <div class="form-group">
+                <label>Slug</label>
+                <input type="text" id="slug">
+            </div>
+
+            <div class="form-group">
+                <label>Hình ảnh danh mục</label>
+                <input type="file" id="imageFile" accept="image/*">
+            </div>
+
+            <button class="save-btn" onclick="saveCategory()">
+                <i class="fa-solid fa-floppy-disk"></i> Lưu danh mục
+            </button>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/admin-category.js}"></script>
+
+</body>
+</html>

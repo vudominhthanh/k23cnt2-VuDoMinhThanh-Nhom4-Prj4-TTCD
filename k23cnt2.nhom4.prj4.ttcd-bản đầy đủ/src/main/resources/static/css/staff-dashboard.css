@@ -1,0 +1,29 @@
+/* Tổng quan layout */
+html, body { height: 100%; overflow: hidden; font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f6f9; }
+
+/* Khu vực quản lý đơn */
+.order-list-container { max-height: calc(100vh - 120px); scrollbar-width: thin; }
+.order-grid-inner { display: flex; flex-wrap: wrap; }
+
+.order-card { cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid #dee2e6; border-radius: 12px; }
+.order-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: #0d6efd; }
+.order-card .card-body { padding: 10px 5px; font-size: 0.7rem; }
+.order-card .order-code { font-weight: 800; color: #212529; }
+#order-grid-inner .col-4 { flex: 0 0 33.3333%; max-width: 33.3333%; }
+
+/* Trạng thái */
+.status-pending { border-left: 4px solid #ffc107; background-color: #fffdf5;}
+.status-confirmed { border-left: 4px solid #0dcaf0; background-color: #f4fdff;}
+.status-delivering { border-left: 4px solid #0d6efd; background-color: #f5f9ff;}
+
+/* Menu POS */
+.menu-container { background-color: #e9ecef; }
+.product-item { background: white; border-radius: 15px; padding: 15px; text-align: center; border: 1px solid #dee2e6; cursor: pointer; transition: transform 0.1s ease-in-out; }
+.product-item:active { transform: scale(0.95); }
+.product-item:hover { border-color: #198754; box-shadow: 0 5px 15px rgba(25,135,84,0.15); }
+
+/* Chỉnh Modal Options */
+.modal-content { border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+#modalSizes .form-check { background: #f8f9fa; padding: 10px 10px 10px 30px; border-radius: 8px; border: 1px solid #dee2e6; }
+#modalOptions .form-check { background: #f8f9fa; padding: 10px 10px 10px 30px; border-radius: 8px; border: 1px solid #dee2e6; }
+.form-check-input:checked { background-color: #198754; border-color: #198754; }
